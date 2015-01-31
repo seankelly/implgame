@@ -5,8 +5,20 @@ gcc48:
     build: %(executable) -O2 %(CFLAGS) %(LDFLAGS) %(source) -o %(output)
     run: %(output)
 
+g++48:
+    executable: g++
+    version: %(executable) --version
+    build: %(executable) -O2 %(CFLAGS) %(LDFLAGS) %(source) -o %(output)
+    run: %(output)
+
 clang:
     executable: clang
+    version: %(executable) --version
+    build: %(executable) -O2 %(CFLAGS) %(LDFLAGS) %(source) -o %(output)
+    run: %(output)
+
+clang++:
+    executable: clang++
     version: %(executable) --version
     build: %(executable) -O2 %(CFLAGS) %(LDFLAGS) %(source) -o %(output)
     run: %(output)
