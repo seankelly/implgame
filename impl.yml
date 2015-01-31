@@ -2,11 +2,11 @@
 gcc48:
     executable: gcc
     version: %(executable) --version
-    build: %(executable) -O2 %(source) -o %(output)
+    build: %(executable) -O2 %(CFLAGS) %(LDFLAGS) %(source) -o %(output)
     run: %(output)
 
 clang:
     executable: clang
     version: %(executable) --version
-    build: %(executable) -O2 %(source) -o %(output)
+    build: %(executable) -O2 %(CFLAGS) %(LDFLAGS) %(source) -o %(output)
     run: %(output)
