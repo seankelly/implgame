@@ -1,0 +1,12 @@
+---
+gcc48:
+    executable: gcc
+    version: %(executable) --version
+    build: %(executable) -O2 %(source) -o %(output)
+    run: %(output)
+
+clang:
+    executable: clang
+    version: %(executable) --version
+    build: %(executable) -O2 %(source) -o %(output)
+    run: %(output)
