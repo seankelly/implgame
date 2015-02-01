@@ -1,0 +1,128 @@
+#!/usr/bin/env python
+
+import argparse
+import os
+import time
+import yaml
+from collections import defaultdict
+from glob import glob
+
+
+games = defaultdict(lambda: [])
+impls = {}
+
+
+class Game:
+    def __init__(self, meta_file):
+        self.meta = meta_file
+        self.game = None
+        self.lang = set()
+        self.source = None
+        self.vars = {}
+        self.load()
+
+    def load(self):
+        with open(self.meta) as f:
+            for l in f.readlines():
+                option, value = l.strip().split('=', 1)
+                if option == 'GAME':
+                    self.game = value
+                elif option == 'LANG':
+                    if isinstance(value, basestring):
+                        self.lang.add(value)
+                    else:
+                        self.lang.update(value)
+                else:
+                    self.vars[option] = value
+        # If the GAME and LANG options were found in the metadata, try to find
+        # the source file.
+        if self.game is not None and len(self.lang) > 0:
+            # Split off the extension and search for files with any extension.
+            # Two files should be found: the metadata file and the source file.
+            # Remove the metadata file and if there is just one file remaining,
+            # that is the source file. If there are multiple files remaining,
+            # do not set the source file. This will be the only indication, I
+            # think, this metadata is invalid.
+            base_path, _ = os.path.splitext(self.meta)
+            glob_files = glob(base_path + '.*')
+            glob_files.remove(self.meta)
+            if len(glob_files) == 1:
+                self.source = glob_files[0]
+
+class Impl:
+    def __init__(self, impl_name, impl):
+        self.name = impl_name
+        self.yaml_config = impl
+        self.load()
+
+    def load(self):
+        self.executable = self.yaml_config['executable']
+        self.impl = self.yaml_config['impl']
+        self.run = self.yaml_config['run']
+        self.version = self.yaml_config['version']
+        self.build = self.yaml_config.get('build', '')
+
+
+def load_all_games(game_dir):
+    global games
+    for root, dirs, files in os.walk(game_dir):
+        if '.git' in dirs:
+            dirs.remove('.git')
+        for f in files:
+            if f.endswith('.meta'):
+                g = Game(os.path.join(root, f))
+                if g.source:
+                    games[g.game].append(g)
+
+def load_all_impls(impl_file):
+    global impls
+    impl_yml = yaml.safe_load(open(impl_file, 'r'))
+    for impl_name, impl in impl_yml.iteritems():
+        i = Impl(impl_name, impl)
+        impls[impl_name] = i
+
+def get_options():
+    parser = argparse.ArgumentParser(description="The implementation game")
+    parser.add_argument("--database", "-d", metavar="DB",
+                        help="Output database to save results.")
+    parser.add_argument("--game", "-g",
+                        help="Accepts a comma-separated list of games to run."
+                        " Two special arguments are accepted:"
+                        " 'list' to list all games and"
+                        " 'all' to run everything.",
+                        default="all")
+    parser.add_argument("--game-dir",
+                        help="Directory containing all of the games.")
+    parser.add_argument("--impl", "-i",
+                        help="Accepts a comma-separated list of implementations to run."
+                        " Two special arguments are accepted:"
+                        " 'list' to list all implementations and"
+                        " 'all' to run everything.",
+                        default="all")
+    parser.add_argument("--impl-file",
+                        help="YAML file containing all implementations.")
+    return parser.parse_args()
+
+def main():
+    args = get_options()
+    cwd = os.getcwd()
+    if args.game_dir is None:
+        game_dir = os.path.join(cwd, 'game')
+    else:
+        game_dir = args.game_dir
+    load_all_games(game_dir)
+    if args.impl_file is None:
+        impl_file = os.path.join(cwd, 'impl.yml')
+    else:
+        impl_file = args.impl_file
+    load_all_impls(impl_file)
+
+    if args.game == 'list':
+        print "Found games: %s" % (", ".join(sorted(games.keys())))
+        return
+    if args.impl == 'list':
+        print "Found implementations: %s" % (", ".join(sorted(impls.keys())))
+
+
+if __name__ == '__main__':
+    main()
