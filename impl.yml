@@ -1,28 +1,28 @@
 ---
 gcc48:
     executable: gcc
-    version: %(executable) --version
-    build: %(executable) -O2 %(CFLAGS) %(LDFLAGS) %(source) -o %(output)
-    run: %(output)
+    version: "%(executable) --version"
+    build: "%(executable) -O2 %(CFLAGS) %(LDFLAGS) %(source) -o %(output)"
+    run: "%(output)"
     impl: c
 
 g++48:
     executable: g++
-    version: %(executable) --version
-    build: %(executable) -O2 %(CFLAGS) %(LDFLAGS) %(source) -o %(output)
-    run: %(output)
+    version: "%(executable) --version"
+    build: "%(executable) -O2 %(CFLAGS) %(LDFLAGS) %(source) -o %(output)"
+    run: "%(output)"
     impl: c++
 
 clang:
     executable: clang
-    version: %(executable) --version
-    build: %(executable) -O2 %(CFLAGS) %(LDFLAGS) %(source) -o %(output)
-    run: %(output)
+    version: "%(executable) --version"
+    build: "%(executable) -O2 %(CFLAGS) %(LDFLAGS) %(source) -o %(output)"
+    run: "%(output)"
     impl: c
 
 clang++:
     executable: clang++
-    version: %(executable) --version
-    build: %(executable) -O2 %(CFLAGS) %(LDFLAGS) %(source) -o %(output)
-    run: %(output)
+    version: "%(executable) --version"
+    build: "%(executable) -O2 %(CFLAGS) %(LDFLAGS) %(source) -o %(output)"
+    run: "%(output)"
     impl: c++
