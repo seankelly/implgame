@@ -77,7 +77,7 @@ def load_all_games(game_dir):
 def load_all_impls(impl_file):
     global impls
     impl_yml = yaml.safe_load(open(impl_file, 'r'))
-    for impl_name, impl in impl_yml.iteritems():
+    for impl_name, impl in impl_yml['impl'].iteritems():
         i = Impl(impl_name, impl)
         impls[impl_name] = i
 
@@ -112,7 +112,7 @@ def main():
         game_dir = args.game_dir
     load_all_games(game_dir)
     if args.impl_file is None:
-        impl_file = os.path.join(cwd, 'impl.yml')
+        impl_file = os.path.join(cwd, 'implgame.yml')
     else:
         impl_file = args.impl_file
     load_all_impls(impl_file)
