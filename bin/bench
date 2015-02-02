@@ -8,11 +8,23 @@ from collections import defaultdict
 from glob import glob
 
 
-games = defaultdict(lambda: [])
+sources = defaultdict(lambda: [])
+games = {}
 impls = {}
 
 
 class Game:
+    def __init__(self, game_name, game):
+        self.name = game_name
+        self.yaml_config = game
+        self.load()
+
+    def load(self):
+        self.description = self.yaml_config['description']
+        self.levels = self.yaml_config['levels']
+        self.nicename = self.yaml_config.get('nicename', self.name)
+
+class GameSource:
     def __init__(self, meta_file):
         self.meta = meta_file
         self.game = None
@@ -63,23 +75,29 @@ class Impl:
         self.build = self.yaml_config.get('build', '')
 
 
-def load_all_games(game_dir):
+def load_all_games(cfg_yml):
     global games
+    for game_name, game in cfg_yml['game'].iteritems():
+        g = Game(game_name, game)
+        nicename = g.nicename
+        games[nicename] = g
+
+def load_all_impls(cfg_yml):
+    global impls
+    for impl_name, impl in cfg_yml['impl'].iteritems():
+        i = Impl(impl_name, impl)
+        impls[impl_name] = i
+
+def load_all_sources(game_dir):
+    global sources
     for root, dirs, files in os.walk(game_dir):
         if '.git' in dirs:
             dirs.remove('.git')
         for f in files:
             if f.endswith('.meta'):
-                g = Game(os.path.join(root, f))
+                g = GameSource(os.path.join(root, f))
                 if g.source:
-                    games[g.game].append(g)
-
-def load_all_impls(impl_file):
-    global impls
-    impl_yml = yaml.safe_load(open(impl_file, 'r'))
-    for impl_name, impl in impl_yml['impl'].iteritems():
-        i = Impl(impl_name, impl)
-        impls[impl_name] = i
+                    sources[g.game].append(g)
 
 def get_options():
     parser = argparse.ArgumentParser(description="The implementation game")
@@ -99,29 +117,36 @@ def get_options():
                         " 'list' to list all implementations and"
                         " 'all' to run everything.",
                         default="all")
-    parser.add_argument("--impl-file",
+    parser.add_argument("--config-file",
                         help="YAML file containing all implementations.")
     return parser.parse_args()
 
 def main():
     args = get_options()
     cwd = os.getcwd()
+
+    if args.config_file is None:
+        config_file = os.path.join(cwd, 'implgame.yml')
+    else:
+        config_file = args.config_file
+
     if args.game_dir is None:
         game_dir = os.path.join(cwd, 'game')
     else:
         game_dir = args.game_dir
-    load_all_games(game_dir)
-    if args.impl_file is None:
-        impl_file = os.path.join(cwd, 'implgame.yml')
-    else:
-        impl_file = args.impl_file
-    load_all_impls(impl_file)
+
+    with open(config_file, 'r') as cf:
+        config_file_yml = yaml.safe_load(cf)
+    load_all_impls(config_file_yml)
+    load_all_games(config_file_yml)
+    load_all_sources(game_dir)
 
     if args.game == 'list':
         print "Found games: %s" % (", ".join(sorted(games.keys())))
         return
     if args.impl == 'list':
         print "Found implementations: %s" % (", ".join(sorted(impls.keys())))
+        return
 
 
 if __name__ == '__main__':

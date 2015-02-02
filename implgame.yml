@@ -27,3 +27,12 @@ impl:
         build: "%(executable) -O2 %(CFLAGS) %(LDFLAGS) %(source) -o %(output)"
         run: "%(output)"
         impl: c++
+
+game:
+    nbody:
+        nicename: n-body
+        description: Simulate motion of outer planets for N steps.
+        levels:
+            - args: 500000
+            - args: 5000000
+            - args: 50000000
