@@ -101,24 +101,26 @@ def load_all_sources(game_dir):
 
 def get_options():
     parser = argparse.ArgumentParser(description="The implementation game")
+    parser.add_argument("--config-file", metavar='FILE',
+                        help="YAML file containing all implementations.")
     parser.add_argument("--database", "-d", metavar="DB",
                         help="Output database to save results.")
     parser.add_argument("--game", "-g",
                         help="Accepts a comma-separated list of games to run."
                         " Two special arguments are accepted:"
                         " 'list' to list all games and"
-                        " 'all' to run everything.",
+                        " 'all' to run everything."
+                        " The default is 'all'.",
                         default="all")
     parser.add_argument("--game-dir",
-                        help="Directory containing all of the games.")
+                        help="Directory containing source for the games.")
     parser.add_argument("--impl", "-i",
                         help="Accepts a comma-separated list of implementations to run."
                         " Two special arguments are accepted:"
                         " 'list' to list all implementations and"
-                        " 'all' to run everything.",
+                        " 'all' to run everything."
+                        " The default is 'all'.",
                         default="all")
-    parser.add_argument("--config-file",
-                        help="YAML file containing all implementations.")
     return parser.parse_args()
 
 def main():
