@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import argparse
+import re
 import os
 import time
 import yaml
@@ -25,41 +26,67 @@ class Game:
         self.nicename = self.yaml_config.get('nicename', self.name)
 
 class GameSource:
-    def __init__(self, meta_file):
-        self.meta = meta_file
+    def __init__(self, source_file):
+        self.source = source_file
         self.game = None
         self.lang = set()
-        self.source = None
         self.vars = {}
         self.load()
 
     def load(self):
-        with open(self.meta) as f:
-            for l in f.readlines():
-                option, value = l.strip().split('=', 1)
-                if option == 'GAME':
-                    self.game = value
-                elif option == 'LANG':
-                    if isinstance(value, basestring):
-                        self.lang.add(value)
-                    else:
-                        self.lang.update(value)
+        # To allow embedding the meta data in the source file, this requires a
+        # consistent pattern to detect it. There must be zero or more white
+        # space characters to start the line, followed by one or more non-white
+        # space characters (e.g. the comment character(s)), followed by zero or
+        # more white space character. Then each meta data variable takes the
+        # form NAME=VALUE. White space will be trimmed from the beginning and
+        # end of both NAME and VALUE.
+        def escape_meta(str):
+            metachars = set(['.', '*', '+'])
+            esc = map(lambda s: s if s not in metachars else "\\" + s, str)
+            return ''.join(esc)
+
+        def make_var_re(comment_string=None, name=None):
+            # Some metacharacters that probably will show up and need to be escaped.
+            regex_str = '^\s*(%s)\s*(%s)=(.*)$'
+            if comment_string is None:
+                comment_string = '\S+'
+            else:
+                comment_string = escape_meta(comment_string)
+            if name is None:
+                name = '\w+'
+            else:
+                name = escape_meta(name)
+            regex = regex_str % (comment_string, name)
+            return re.compile(regex, re.MULTILINE)
+
+        with open(self.source) as f:
+            contents = f.read()
+
+        name_re = make_var_re(name='GAME')
+        name_var = name_re.search(contents)
+        if not name_var:
+            return
+        # Found something matching GAME=foo. Get the comment string at the
+        # beginning to find the rest of the meta data. The game name is not
+        # saved to make logic in the loop simpler.
+        name_groups = name_var.groups()
+        comment_string = name_groups[0]
+        meta_data = make_var_re(comment_string=comment_string).findall(contents)
+        for meta in meta_data:
+            _, option, value = meta
+            if option == 'GAME':
+                self.game = value
+            elif option == 'LANG':
+                if isinstance(value, basestring):
+                    self.lang.add(value)
                 else:
-                    self.vars[option] = value
-        # If the GAME and LANG options were found in the metadata, try to find
-        # the source file.
-        if self.game is not None and len(self.lang) > 0:
-            # Split off the extension and search for files with any extension.
-            # Two files should be found: the metadata file and the source file.
-            # Remove the metadata file and if there is just one file remaining,
-            # that is the source file. If there are multiple files remaining,
-            # do not set the source file. This will be the only indication, I
-            # think, this metadata is invalid.
-            base_path, _ = os.path.splitext(self.meta)
-            glob_files = glob(base_path + '.*')
-            glob_files.remove(self.meta)
-            if len(glob_files) == 1:
-                self.source = glob_files[0]
+                    self.lang.update(value)
+            else:
+                self.vars[option] = value
+
+    def is_valid(self):
+        return False
 
 class Impl:
     def __init__(self, impl_name, impl):
@@ -96,10 +123,9 @@ def load_all_sources(game_dir, games):
         if '.git' in dirs:
             dirs.remove('.git')
         for f in files:
-            if f.endswith('.meta'):
-                g = GameSource(os.path.join(root, f))
-                if g.source:
-                    sources[g.game].append(g)
+            g = GameSource(os.path.join(root, f))
+            if g.is_valid():
+                sources[g.game].append(g)
     return sources
 
 def get_options():
