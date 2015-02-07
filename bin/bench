@@ -90,7 +90,7 @@ def load_all_impls(cfg_yml):
         impls[impl_name] = i
     return impls
 
-def load_all_sources(game_dir):
+def load_all_sources(game_dir, games):
     global sources
     for root, dirs, files in os.walk(game_dir):
         if '.git' in dirs:
@@ -144,7 +144,7 @@ def main():
         config_file_yml = yaml.safe_load(cf)
     impls = load_all_impls(config_file_yml)
     games = load_all_games(config_file_yml)
-    sources = load_all_sources(game_dir)
+    sources = load_all_sources(game_dir, games)
 
     if args.game == 'list':
         print "Found games: %s" % (", ".join(sorted(games.keys())))
