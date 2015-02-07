@@ -81,12 +81,14 @@ def load_all_games(cfg_yml):
         g = Game(game_name, game)
         nicename = g.nicename
         games[nicename] = g
+    return games
 
 def load_all_impls(cfg_yml):
     global impls
     for impl_name, impl in cfg_yml['impl'].iteritems():
         i = Impl(impl_name, impl)
         impls[impl_name] = i
+    return impls
 
 def load_all_sources(game_dir):
     global sources
@@ -98,6 +100,7 @@ def load_all_sources(game_dir):
                 g = GameSource(os.path.join(root, f))
                 if g.source:
                     sources[g.game].append(g)
+    return sources
 
 def get_options():
     parser = argparse.ArgumentParser(description="The implementation game")
@@ -139,9 +142,9 @@ def main():
 
     with open(config_file, 'r') as cf:
         config_file_yml = yaml.safe_load(cf)
-    load_all_impls(config_file_yml)
-    load_all_games(config_file_yml)
-    load_all_sources(game_dir)
+    impls = load_all_impls(config_file_yml)
+    games = load_all_games(config_file_yml)
+    sources = load_all_sources(game_dir)
 
     if args.game == 'list':
         print "Found games: %s" % (", ".join(sorted(games.keys())))
