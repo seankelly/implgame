@@ -75,9 +75,7 @@ class GameSource:
         meta_data = make_var_re(comment_string=comment_string).findall(contents)
         for meta in meta_data:
             _, option, value = meta
-            if option == 'GAME':
-                self.game = value
-            elif option == 'LANG':
+            if option == 'LANG':
                 if isinstance(value, basestring):
                     self.lang.add(value)
                 else:
@@ -86,7 +84,7 @@ class GameSource:
                 self.vars[option] = value
 
     def is_valid(self):
-        return False
+        return ('GAME' in self.vars)
 
 class Impl:
     def __init__(self, impl_name, impl):
