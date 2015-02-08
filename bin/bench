@@ -123,7 +123,9 @@ def load_all_sources(game_dir, games):
         for f in files:
             g = GameSource(os.path.join(root, f))
             if g.is_valid():
-                sources[g.game].append(g)
+                if g.vars['GAME'] in games:
+                    g.game = games[g.vars['GAME']]
+                    sources[g.vars['GAME']].append(g)
     return sources
 
 def get_options():
