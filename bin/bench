@@ -9,11 +9,6 @@ from collections import defaultdict
 from glob import glob
 
 
-sources = defaultdict(lambda: [])
-games = {}
-impls = {}
-
-
 class Game:
     def __init__(self, game_name, game):
         self.name = game_name
@@ -101,7 +96,7 @@ class Impl:
 
 
 def load_all_games(cfg_yml):
-    global games
+    games = {}
     for game_name, game in cfg_yml['game'].iteritems():
         g = Game(game_name, game)
         nicename = g.nicename
@@ -109,14 +104,14 @@ def load_all_games(cfg_yml):
     return games
 
 def load_all_impls(cfg_yml):
-    global impls
+    impls = {}
     for impl_name, impl in cfg_yml['impl'].iteritems():
         i = Impl(impl_name, impl)
         impls[impl_name] = i
     return impls
 
 def load_all_sources(game_dir, games):
-    global sources
+    sources = defaultdict(lambda: [])
     for root, dirs, files in os.walk(game_dir):
         if '.git' in dirs:
             dirs.remove('.git')
