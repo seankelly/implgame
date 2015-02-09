@@ -92,8 +92,7 @@ class Impl:
         self.impl = self.yaml_config['impl']
         self.run = self.yaml_config['run']
         self.version = self.yaml_config['version']
-        self.build = self.yaml_config.get('build', '')
-
+        self.build = self.yaml_config.get('build')
 
 def load_all_games(cfg_yml):
     games = {}
