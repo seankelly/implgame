@@ -3,11 +3,40 @@
 import argparse
 import re
 import os
+import shlex
+import subprocess
 import time
 import yaml
 from collections import defaultdict
 from glob import glob
 
+
+class Bench:
+    def __init__(self, impl, source):
+        self.impl = impl
+        self.source = source
+
+    def bench(self):
+        vars = defaultdict(lambda: '')
+        for k, v in self.source.vars.iteritems():
+            vars[k] = v
+        vars['executable'] = self.impl.executable
+        vars['source'] = self.source.source
+        vars['output'] = 'TMPFILE'
+        self.build(vars)
+        self.run(vars)
+
+    def build(self, vars):
+        # If the implementation has no build key or the build key is the empty
+        # string, then no need to compile.
+        if not self.impl.build:
+            return
+        cmd_s = self.impl.build % vars
+        cmd = shlex.split(cmd_s)
+        print "Running %s" % (cmd)
+
+    def run(self, vars):
+        pass
 
 class Game:
     def __init__(self, game_name, game):
