@@ -202,6 +202,13 @@ def main():
         print "Found implementations: %s" % (", ".join(sorted(impls.keys())))
         return
 
+    # TODO: Clean this up so args.game and args.impl are used.
+    for s in sources:
+        for source in sources[s]:
+            for implname, impl in impls.iteritems():
+                b = Bench(impl, source)
+                b.bench()
+
 
 if __name__ == '__main__':
     main()
