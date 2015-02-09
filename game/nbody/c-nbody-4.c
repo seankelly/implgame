@@ -1,5 +1,5 @@
 /*
- * GAME=nbody
+ * GAME=n-body
  * CFLAGS=-O3 -Wall -fomit-frame-pointer -march=native -mfpmath=sse -msse3 -pipe
  * LDFLAGS=-lm
  * LANG=c

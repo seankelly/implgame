@@ -1,5 +1,5 @@
 /*
- * GAME=nbody
+ * GAME=n-body
  * CFLAGS=--std=c++11 -O3 -fomit-frame-pointer -fopenmp -march=native -mfpmath=sse -msse3 -pipe
  * LANG=c++
  *
