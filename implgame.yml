@@ -2,30 +2,30 @@
 impl:
     gcc48:
         executable: gcc
-        version: "%(executable) --version"
-        build: "%(executable) -O2 %(CFLAGS) %(LDFLAGS) %(source) -o %(output)"
-        run: "%(output)"
+        version: "%(executable)s --version"
+        build: "%(executable)s -O2 %(CFLAGS)s %(LDFLAGS)s %(source)s -o %(output)s"
+        run: "%(output)s"
         impl: c
 
     g++48:
         executable: g++
-        version: "%(executable) --version"
-        build: "%(executable) -O2 %(CFLAGS) %(LDFLAGS) %(source) -o %(output)"
-        run: "%(output)"
+        version: "%(executable)s --version"
+        build: "%(executable)s -O2 %(CFLAGS)s %(LDFLAGS)s %(source)s -o %(output)s"
+        run: "%(output)s"
         impl: c++
 
     clang:
         executable: clang
-        version: "%(executable) --version"
-        build: "%(executable) -O2 %(CFLAGS) %(LDFLAGS) %(source) -o %(output)"
-        run: "%(output)"
+        version: "%(executable)s --version"
+        build: "%(executable)s -O2 %(CFLAGS)s %(LDFLAGS)s %(source)s -o %(output)s"
+        run: "%(output)s"
         impl: c
 
     clang++:
         executable: clang++
-        version: "%(executable) --version"
-        build: "%(executable) -O2 %(CFLAGS) %(LDFLAGS) %(source) -o %(output)"
-        run: "%(output)"
+        version: "%(executable)s --version"
+        build: "%(executable)s -O2 %(CFLAGS)s %(LDFLAGS)s %(source)s -o %(output)s"
+        run: "%(output)s"
         impl: c++
 
 game:
