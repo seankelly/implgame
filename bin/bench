@@ -42,6 +42,7 @@ class Bench:
             return
         cmd_s = self.impl.build % vars
         cmd = shlex.split(cmd_s)
+        subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
     def run(self, vars):
         pass
