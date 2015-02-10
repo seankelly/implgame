@@ -215,6 +215,8 @@ def main():
     for s in sources:
         for source in sources[s]:
             for implname, impl in impls.iteritems():
+                if impl.impl not in source.lang:
+                    continue
                 b = Bench(impl, source)
                 b.bench()
 
