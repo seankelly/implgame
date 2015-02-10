@@ -5,6 +5,7 @@ import re
 import os
 import shlex
 import subprocess
+import tempfile
 import time
 import yaml
 from collections import defaultdict
@@ -20,11 +21,16 @@ class Bench:
         vars = defaultdict(lambda: '')
         for k, v in self.source.vars.iteritems():
             vars[k] = v
+        tmpdir = tempfile.mkdtemp()
         vars['executable'] = self.impl.executable
         vars['source'] = self.source.source
-        vars['output'] = 'TMPFILE'
+        output_file = '%s-%s' % (self.impl.name, self.source.game.nicename)
+        vars['output'] = os.path.join(tmpdir, output_file)
         self.build(vars)
         self.run(vars)
+        if os.path.exists(vars['output']):
+            os.remove(vars['output'])
+        os.rmdir(tmpdir)
 
     def build(self, vars):
         # If the implementation has no build key or the build key is the empty
