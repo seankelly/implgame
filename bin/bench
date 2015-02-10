@@ -4,6 +4,7 @@ import argparse
 import re
 import os
 import shlex
+import shutil
 import subprocess
 import tempfile
 import time
@@ -33,13 +34,14 @@ class Bench:
         os.rmdir(tmpdir)
 
     def build(self, vars):
-        # If the implementation has no build key or the build key is the empty
-        # string, then no need to compile.
+        # Copy the source file to the output file. This will probably put the
+        # file into the cache, but that is not the (primary) goal. The point is
+        # to put the file that gets executed in the temporary directory.
         if not self.impl.build:
+            shutil.copyfile(vars['source'], vars['output'])
             return
         cmd_s = self.impl.build % vars
         cmd = shlex.split(cmd_s)
-        print "Running %s" % (cmd)
 
     def run(self, vars):
         pass
