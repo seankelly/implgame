@@ -39,10 +39,12 @@ class Bench:
         # to put the file that gets executed in the temporary directory.
         if not self.impl.build:
             shutil.copyfile(vars['source'], vars['output'])
-            return
+            return 0, None
         cmd_s = self.impl.build % vars
         cmd = shlex.split(cmd_s)
-        subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        b = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        pid, rc, res = os.wait4(b.pid, 0)
+        return rc, res
 
     def run(self, vars):
         pass
