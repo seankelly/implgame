@@ -17,6 +17,12 @@ class Bench:
         self.impl = impl
         self.source = source
 
+    def execute(self, cmd):
+        process = subprocess.Popen(cmd, stdout=subprocess.PIPE,
+                                   stderr=subprocess.STDOUT)
+        _, rc, ru = os.wait4(process.pid, 0)
+        return rc, ru
+
     def bench(self):
         game_vars = defaultdict(lambda: '')
         for k, v in self.source.vars.iteritems():
@@ -41,12 +47,12 @@ class Bench:
             return 0, None
         cmd_s = self.impl.build % game_vars
         cmd = shlex.split(cmd_s)
-        b = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        pid, rc, res = os.wait4(b.pid, 0)
-        return rc, res
+        return self.execute(cmd)
 
     def run(self, game_vars):
-        pass
+        cmd_s = self.impl.run % game_vars
+        cmd = shlex.split(cmd_s)
+        return self.execute(cmd)
 
 class Game:
     def __init__(self, game_name, game):
