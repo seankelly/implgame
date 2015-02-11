@@ -50,9 +50,13 @@ class Bench:
         return self.execute(cmd)
 
     def run(self, game_vars):
-        cmd_s = self.impl.run % game_vars
-        cmd = shlex.split(cmd_s)
-        return self.execute(cmd)
+        run_results = []
+        for level in self.source.game.levels:
+            game_vars['args'] = level['args']
+            cmd_s = self.impl.run % game_vars
+            cmd = shlex.split(cmd_s)
+            run_results.append(self.execute(cmd))
+        return run_results
 
 class Game:
     def __init__(self, game_name, game):
