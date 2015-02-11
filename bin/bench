@@ -18,34 +18,34 @@ class Bench:
         self.source = source
 
     def bench(self):
-        vars = defaultdict(lambda: '')
+        game_vars = defaultdict(lambda: '')
         for k, v in self.source.vars.iteritems():
-            vars[k] = v
+            game_vars[k] = v
         tmpdir = tempfile.mkdtemp()
-        vars['executable'] = self.impl.executable
-        vars['source'] = self.source.source
+        game_vars['executable'] = self.impl.executable
+        game_vars['source'] = self.source.source
         output_file = '%s-%s' % (self.impl.name, self.source.game.nicename)
-        vars['output'] = os.path.join(tmpdir, output_file)
-        self.build(vars)
-        self.run(vars)
-        if os.path.exists(vars['output']):
-            os.remove(vars['output'])
+        game_vars['output'] = os.path.join(tmpdir, output_file)
+        self.build(game_vars)
+        self.run(game_vars)
+        if os.path.exists(game_vars['output']):
+            os.remove(game_vars['output'])
         os.rmdir(tmpdir)
 
-    def build(self, vars):
+    def build(self, game_vars):
         # Copy the source file to the output file. This will probably put the
         # file into the cache, but that is not the (primary) goal. The point is
         # to put the file that gets executed in the temporary directory.
         if not self.impl.build:
-            shutil.copyfile(vars['source'], vars['output'])
+            shutil.copyfile(game_vars['source'], game_vars['output'])
             return 0, None
-        cmd_s = self.impl.build % vars
+        cmd_s = self.impl.build % game_vars
         cmd = shlex.split(cmd_s)
         b = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         pid, rc, res = os.wait4(b.pid, 0)
         return rc, res
 
-    def run(self, vars):
+    def run(self, game_vars):
         pass
 
 class Game:
@@ -78,9 +78,9 @@ class GameSource:
         # more white space character. Then each meta data variable takes the
         # form NAME=VALUE. White space will be trimmed from the beginning and
         # end of both NAME and VALUE.
-        def escape_meta(str):
+        def escape_meta(string):
             metachars = {'.': r'\.', '*': r'\*', '+': r'\+'}
-            esc = [metachars.get(s, s) for s in str]
+            esc = [metachars.get(s, s) for s in string]
             return ''.join(esc)
 
         def make_var_re(comment_string=None, name=None):
