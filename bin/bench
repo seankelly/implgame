@@ -53,6 +53,9 @@ class Game:
     def __init__(self, game_name, game):
         self.name = game_name
         self.yaml_config = game
+        self.description = None
+        self.levels = None
+        self.nicename = None
         self.load()
 
     def load(self):
@@ -125,6 +128,11 @@ class Impl:
     def __init__(self, impl_name, impl):
         self.name = impl_name
         self.yaml_config = impl
+        self.executable = None
+        self.impl = None
+        self.run = None
+        self.version = None
+        self.build = None
         self.load()
 
     def load(self):
