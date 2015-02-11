@@ -11,21 +11,21 @@ impl:
     executable: g++
     version: "%(executable)s --version"
     build: "%(executable)s -O2 %(CFLAGS)s %(LDFLAGS)s %(source)s -o %(output)s"
-    run: "%(output)s"
+    run: "%(output)s %(args)s"
     impl: c++
 
   clang:
     executable: clang
     version: "%(executable)s --version"
     build: "%(executable)s -O2 %(CFLAGS)s %(LDFLAGS)s %(source)s -o %(output)s"
-    run: "%(output)s"
+    run: "%(output)s %(args)s"
     impl: c
 
   clang++:
     executable: clang++
     version: "%(executable)s --version"
     build: "%(executable)s -O2 %(CFLAGS)s %(LDFLAGS)s %(source)s -o %(output)s"
-    run: "%(output)s"
+    run: "%(output)s %(args)s"
     impl: c++
 
 game:
