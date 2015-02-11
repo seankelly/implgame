@@ -77,8 +77,8 @@ class GameSource:
         # form NAME=VALUE. White space will be trimmed from the beginning and
         # end of both NAME and VALUE.
         def escape_meta(str):
-            metachars = set(['.', '*', '+'])
-            esc = map(lambda s: s if s not in metachars else "\\" + s, str)
+            metachars = {'.': r'\.', '*': r'\*', '+': r'\+'}
+            esc = [metachars.get(s, s) for s in str]
             return ''.join(esc)
 
         def make_var_re(comment_string=None, name=None):
