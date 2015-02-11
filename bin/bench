@@ -83,13 +83,13 @@ class GameSource:
 
         def make_var_re(comment_string=None, name=None):
             # Some metacharacters that probably will show up and need to be escaped.
-            regex_str = '^\s*(%s)\s*(%s)=(.*)$'
+            regex_str = r'^\s*(%s)\s*(%s)=(.*)$'
             if comment_string is None:
-                comment_string = '\S+'
+                comment_string = r'\S+'
             else:
                 comment_string = escape_meta(comment_string)
             if name is None:
-                name = '\w+'
+                name = r'\w+'
             else:
                 name = escape_meta(name)
             regex = regex_str % (comment_string, name)
