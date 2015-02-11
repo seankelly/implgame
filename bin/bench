@@ -10,7 +10,6 @@ import tempfile
 import time
 import yaml
 from collections import defaultdict
-from glob import glob
 
 
 class Bench:
