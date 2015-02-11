@@ -34,5 +34,14 @@ game:
     description: Simulate motion of outer planets for N steps.
     levels:
       - args: 500000
+        result: |
+          -0.169075164
+          -0.169096567
       - args: 5000000
+        result: |
+          -0.169075164
+          -0.169083134
       - args: 50000000
+        result: |
+          -0.169075164
+          -0.169059907
