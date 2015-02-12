@@ -18,10 +18,13 @@ class Bench:
         self.source = source
 
     def execute(self, cmd):
+        start_time = time.time()
         process = subprocess.Popen(cmd, stdout=subprocess.PIPE,
                                    stderr=subprocess.STDOUT)
         _, rc, ru = os.wait4(process.pid, 0)
-        return rc, ru
+        end_time = time.time()
+        wall_time = end_time - start_time
+        return rc, ru, wall_time
 
     def bench(self):
         game_vars = defaultdict(lambda: '')
