@@ -5,6 +5,7 @@ import re
 import os
 import shlex
 import shutil
+import sqlite3
 import subprocess
 import tempfile
 import time
@@ -60,6 +61,59 @@ class Bench:
             cmd = shlex.split(cmd_s)
             run_results.append(self.execute(cmd))
         return run_results
+
+class BenchResults:
+    def __init__(self, db_path):
+        self.db_path = db_path
+        self.conn = sqlite3.connect(db_path)
+        self.check_db()
+
+    def check_db(self):
+        """
+        Check the database to ensure it has the right tables and the tables
+        have the right columns.
+        """
+        # Using an ORM would obviate much of this but I want to keep this
+        # lightweight and hopefully simple.
+        c = self.conn.cursor()
+        table_schema = {
+            'run': {
+                'columns': ['id', 'when', 'impl', 'version'],
+                'schema': """CREATE TABLE run (
+                    id INTEGER PRIMARY KEY,
+                    run_when TEXT,
+                    impl TEXT,
+                    version TEXT
+                )""",
+            },
+            'results': {
+                'columns': ['run_id', 'result', 'args', 'level', 'output',
+                            'cputime', 'walltime', 'memusage'],
+                'schema': """CREATE TABLE results (
+                    run_id INTEGER PRIMARY KEY,
+                    result INTEGER,
+                    args TEXT,
+                    level TEXT,
+                    output TEXT,
+                    cputime REAL,
+                    walltime REAL,
+                    memusage INTEGER
+                )""",
+            },
+        }
+        for table in table_schema:
+            try:
+                c.execute("SELECT * FROM " + table)
+            except sqlite3.OperationalError as exc:
+                if exc.message.startswith('no such table:'):
+                    c.execute(table_schema[table]['schema'])
+                    self.conn.commit()
+
+    def add_run(self):
+        pass
+
+    def add_result(self, run_id):
+        pass
 
 class Game:
     def __init__(self, game_name, game):
