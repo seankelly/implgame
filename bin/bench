@@ -14,7 +14,8 @@ from collections import defaultdict
 
 
 class Bench:
-    def __init__(self, impl, source):
+    def __init__(self, db, impl, source):
+        self.db = db
         self.impl = impl
         self.source = source
 
@@ -241,7 +242,8 @@ def get_options():
     parser.add_argument("--config-file", metavar='FILE',
                         help="YAML file containing all implementations.")
     parser.add_argument("--database", "-d", metavar="DB",
-                        help="Output database to save results.")
+                        help="Output database to save results.",
+                        default="implgame.db")
     parser.add_argument("--game", "-g",
                         help="Accepts a comma-separated list of games to run."
                         " Two special arguments are accepted:"
@@ -287,13 +289,15 @@ def main():
         print "Found implementations: %s" % (", ".join(sorted(impls.keys())))
         return
 
+    db = BenchResults(args.database)
+
     # TODO: Clean this up so args.game and args.impl are used.
     for s in sources:
         for source in sources[s]:
             for implname, impl in impls.iteritems():
                 if impl.impl not in source.lang:
                     continue
-                b = Bench(impl, source)
+                b = Bench(db, impl, source)
                 b.bench()
 
 
