@@ -134,7 +134,7 @@ class GameSource:
                 self.vars[option] = value
 
     def is_valid(self):
-        return ('GAME' in self.vars)
+        return 'GAME' in self.vars
 
 class Impl:
     def __init__(self, impl_name, impl):
