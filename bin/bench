@@ -87,10 +87,10 @@ class BenchResults:
                     version TEXT
                 )""",
             },
-            'results': {
+            'result': {
                 'columns': ['run_id', 'result', 'args', 'level', 'output',
                             'cputime', 'walltime', 'memusage'],
-                'schema': """CREATE TABLE results (
+                'schema': """CREATE TABLE result (
                     run_id INTEGER PRIMARY KEY,
                     result INTEGER,
                     args TEXT,
