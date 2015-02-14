@@ -59,9 +59,10 @@ class Bench:
         process = subprocess.Popen(cmd, stdout=subprocess.PIPE,
                                    stderr=subprocess.STDOUT)
         _, rc, ru = os.wait4(process.pid, 0)
+        stdout, _ = process.communicate()
         end_time = time.time()
         wall_time = end_time - start_time
-        return rc, ru, wall_time
+        return rc, stdout, ru, wall_time
 
 class BenchResults:
     def __init__(self, db_path):
