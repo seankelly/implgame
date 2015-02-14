@@ -19,15 +19,6 @@ class Bench:
         self.impl = impl
         self.source = source
 
-    def execute(self, cmd):
-        start_time = time.time()
-        process = subprocess.Popen(cmd, stdout=subprocess.PIPE,
-                                   stderr=subprocess.STDOUT)
-        _, rc, ru = os.wait4(process.pid, 0)
-        end_time = time.time()
-        wall_time = end_time - start_time
-        return rc, ru, wall_time
-
     def bench(self):
         game_vars = defaultdict(lambda: '')
         for k, v in self.source.vars.iteritems():
@@ -62,6 +53,15 @@ class Bench:
             cmd = shlex.split(cmd_s)
             run_results.append(self.execute(cmd))
         return run_results
+
+    def execute(self, cmd):
+        start_time = time.time()
+        process = subprocess.Popen(cmd, stdout=subprocess.PIPE,
+                                   stderr=subprocess.STDOUT)
+        _, rc, ru = os.wait4(process.pid, 0)
+        end_time = time.time()
+        wall_time = end_time - start_time
+        return rc, ru, wall_time
 
 class BenchResults:
     def __init__(self, db_path):
