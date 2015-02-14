@@ -110,11 +110,21 @@ class BenchResults:
                     c.execute(table_schema[table]['schema'])
                     self.conn.commit()
 
-    def add_run(self):
-        pass
+    def add_run(self, when, impl, version):
+        add_run_sql = 'INSERT INTO run (run_when, impl, version) VALUES (?, ?, ?)'
+        c = self.conn.cursor()
+        c.execute(add_run_sql, (when, impl, version))
+        self.conn.commit()
+        row_id = c.lastrowid
+        return row_id
 
-    def add_result(self, run_id):
-        pass
+    def add_result(self, run_id, result, args, level, output, cputime,
+                   walltime, memusage):
+        add_result_sql = 'INSERT INTO result VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+        c = self.conn.cursor()
+        c.execute(add_result_sql, (run_id, result, args, level, output, cputime,
+                  walltime, memusage))
+        self.conn.commit()
 
 class Game:
     def __init__(self, game_name, game):
