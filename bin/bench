@@ -40,7 +40,7 @@ class Bench:
         # to put the file that gets executed in the temporary directory.
         if not self.impl.build:
             shutil.copyfile(game_vars['source'], game_vars['output'])
-            return 0, None
+            return self.execute([])
         cmd_s = self.impl.build % game_vars
         cmd = shlex.split(cmd_s)
         return self.execute(cmd)
@@ -55,6 +55,11 @@ class Bench:
         return run_results
 
     def execute(self, cmd):
+        # If the command to run is the empty list, treat it as a no-op. This is
+        # to make it simpler to keep what no-op executions have to return and
+        # what really gets returned from usual commands being run.
+        if len(cmd) == 0:
+            return 0, '', None, 0.0
         start_time = time.time()
         process = subprocess.Popen(cmd, stdout=subprocess.PIPE,
                                    stderr=subprocess.STDOUT)
