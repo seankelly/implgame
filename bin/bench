@@ -28,36 +28,47 @@ class Bench:
         game_vars['source'] = self.source.source
         output_file = '%s-%s' % (self.impl.name, self.source.game.nicename)
         game_vars['output'] = os.path.join(tmpdir, output_file)
-        self.build(game_vars)
-        self.run(game_vars)
+
+        run_id = self.db.add_run('', self.impl.name, '')
+
+        build_result = self.build(run_id, game_vars)
+        # If the build failed, can't run the executables.
+        if build_result == 0:
+            self.run(run_id, game_vars)
+
         if os.path.exists(game_vars['output']):
             os.remove(game_vars['output'])
         os.rmdir(tmpdir)
 
-    def build(self, game_vars):
+    def build(self, run_id, game_vars):
         # Copy the source file to the output file. This will probably put the
         # file into the cache, but that is not the (primary) goal. The point is
         # to put the file that gets executed in the temporary directory.
         if not self.impl.build:
             shutil.copyfile(game_vars['source'], game_vars['output'])
-            return self.execute('')
+            return 0
         cmd = self.impl.build % game_vars
-        return self.execute(cmd)
+        return self.execute(run_id, cmd)
 
-    def run(self, game_vars):
-        run_results = []
+    def run(self, run_id, game_vars):
         for level in self.source.game.levels:
             game_vars['args'] = level['args']
             cmd = self.impl.run % game_vars
-            run_results.append(self.execute(cmd))
-        return run_results
+            self.execute(run_id, cmd)
 
-    def execute(self, cmd):
+    def add_result(self, run_id, result, cmd, output, rusage, walltime):
+        # run_id, result, cmd, output, cputime, walltime, memusage
+        cputime = rusage.ru_utime + rusage.ru_stime
+        memusage = rusage.ru_maxrss
+        self.db.add_result(run_id, result, cmd, output, cputime, walltime, memusage)
+
+    def execute(self, run_id, cmd):
         # If the command to run is the empty string, treat it as a no-op. This is
         # to make it simpler to keep what no-op executions have to return and
         # what really gets returned from usual commands being run.
         if not cmd:
-            return 0, '', None, 0.0
+            return 0
+
         cmd_l = shlex.split(cmd)
         start_time = time.time()
         process = subprocess.Popen(cmd_l, stdout=subprocess.PIPE,
@@ -66,7 +77,8 @@ class Bench:
         stdout, _ = process.communicate()
         end_time = time.time()
         wall_time = end_time - start_time
-        return rc, stdout, ru, wall_time
+        self.add_result(run_id, rc, cmd, stdout, ru, wall_time)
+        return rc
 
 class BenchResults:
     def __init__(self, db_path):
