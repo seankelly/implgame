@@ -11,6 +11,7 @@ import tempfile
 import time
 import yaml
 from collections import defaultdict
+from datetime import datetime
 
 
 class Bench:
@@ -29,7 +30,8 @@ class Bench:
         output_file = '%s-%s' % (self.impl.name, self.source.game.nicename)
         game_vars['output'] = os.path.join(tmpdir, output_file)
 
-        run_id = self.db.add_run('', self.impl.name, self.impl.get_version())
+        now = datetime.now().isoformat()
+        run_id = self.db.add_run(now, self.impl.name, self.impl.get_version())
 
         build_result = self.build(run_id, game_vars)
         # If the build failed, can't run the executables.
