@@ -29,7 +29,7 @@ class Bench:
         output_file = '%s-%s' % (self.impl.name, self.source.game.nicename)
         game_vars['output'] = os.path.join(tmpdir, output_file)
 
-        run_id = self.db.add_run('', self.impl.name, '')
+        run_id = self.db.add_run('', self.impl.name, self.impl.get_version())
 
         build_result = self.build(run_id, game_vars)
         # If the build failed, can't run the executables.
@@ -234,6 +234,14 @@ class Impl:
         self.run = self.yaml_config['run']
         self.version = self.yaml_config['version']
         self.build = self.yaml_config.get('build')
+
+    def get_version(self):
+        cmd_string = self.version % {'executable': self.executable}
+        cmd = shlex.split(cmd_string)
+        process = subprocess.Popen(cmd, stdout=subprocess.PIPE,
+                                   stderr=subprocess.STDOUT)
+        stdout, _ = process.communicate()
+        return stdout
 
 def load_all_games(cfg_yml):
     games = {}
