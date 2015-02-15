@@ -93,12 +93,12 @@ class BenchResults:
                 )""",
             },
             'result': {
-                'columns': ['run_id', 'result', 'args', 'level', 'output',
+                'columns': ['run_id', 'result', 'cmd', 'level', 'output',
                             'cputime', 'walltime', 'memusage'],
                 'schema': """CREATE TABLE result (
                     run_id INTEGER PRIMARY KEY,
                     result INTEGER,
-                    args TEXT,
+                    cmd TEXT,
                     level TEXT,
                     output TEXT,
                     cputime REAL,
