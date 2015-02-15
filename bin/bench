@@ -55,16 +55,18 @@ class Bench:
     def run(self, run_id, game_vars):
         for level in self.source.game.levels:
             game_vars['args'] = level['args']
+            expected = level['result']
             cmd = self.impl.run % game_vars
-            self.execute(run_id, cmd)
+            self.execute(run_id, cmd, expected)
 
-    def add_result(self, run_id, result, cmd, output, rusage, walltime):
+    def add_result(self, run_id, passed, exitstatus, cmd, output, rusage, walltime):
         # run_id, result, cmd, output, cputime, walltime, memusage
         cputime = rusage.ru_utime + rusage.ru_stime
         memusage = rusage.ru_maxrss
-        self.db.add_result(run_id, result, cmd, output, cputime, walltime, memusage)
+        self.db.add_result(run_id, passed, exitstatus, cmd, output, cputime,
+                           walltime, memusage)
 
-    def execute(self, run_id, cmd):
+    def execute(self, run_id, cmd, expected=None):
         # If the command to run is the empty string, treat it as a no-op. This is
         # to make it simpler to keep what no-op executions have to return and
         # what really gets returned from usual commands being run.
@@ -75,12 +77,22 @@ class Bench:
         start_time = time.time()
         process = subprocess.Popen(cmd_l, stdout=subprocess.PIPE,
                                    stderr=subprocess.STDOUT)
-        _, rc, ru = os.wait4(process.pid, 0)
+        _, exitstatus, rusage = os.wait4(process.pid, 0)
         stdout, _ = process.communicate()
         end_time = time.time()
         wall_time = end_time - start_time
-        self.add_result(run_id, rc, cmd, stdout, ru, wall_time)
-        return rc
+
+        if expected is not None:
+            # If some output was expected, strip leading and trailing
+            # whitespace from the expected string and stdout and then compare
+            # the two.
+            passed = expected.strip() == stdout.strip()
+        else:
+            # If nothing expected, then it passed if the command had an exit
+            # status of zero.
+            passed = exitstatus == 0
+        self.add_result(run_id, passed, exitstatus, cmd, stdout, rusage, wall_time)
+        return exitstatus
 
 class BenchResults:
     def __init__(self, db_path):
@@ -107,11 +119,12 @@ class BenchResults:
                 )""",
             },
             'result': {
-                'columns': ['run_id', 'result', 'cmd', 'output',
+                'columns': ['run_id', 'passed', 'exitstatus', 'cmd', 'output',
                             'cputime', 'walltime', 'memusage'],
                 'schema': """CREATE TABLE result (
                     run_id INTEGER,
-                    result INTEGER,
+                    passed BOOLEAN,
+                    exitstatus INTEGER,
                     cmd TEXT,
                     output TEXT,
                     cputime REAL,
@@ -136,12 +149,12 @@ class BenchResults:
         row_id = c.lastrowid
         return row_id
 
-    def add_result(self, run_id, result, args, output, cputime,
+    def add_result(self, run_id, passed, exitstatus, args, output, cputime,
                    walltime, memusage):
-        add_result_sql = 'INSERT INTO result VALUES (?, ?, ?, ?, ?, ?, ?)'
+        add_result_sql = 'INSERT INTO result VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
         c = self.conn.cursor()
-        c.execute(add_result_sql, (run_id, result, args, output, cputime,
-                                   walltime, memusage))
+        c.execute(add_result_sql, (run_id, passed, exitstatus, args, output,
+                                   cputime, walltime, memusage))
         self.conn.commit()
 
 class Game:
