@@ -96,7 +96,7 @@ class BenchResults:
                 'columns': ['run_id', 'result', 'cmd', 'output',
                             'cputime', 'walltime', 'memusage'],
                 'schema': """CREATE TABLE result (
-                    run_id INTEGER PRIMARY KEY,
+                    run_id INTEGER,
                     result INTEGER,
                     cmd TEXT,
                     output TEXT,
