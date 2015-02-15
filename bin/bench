@@ -139,7 +139,7 @@ class BenchResults:
         add_result_sql = 'INSERT INTO result VALUES (?, ?, ?, ?, ?, ?, ?)'
         c = self.conn.cursor()
         c.execute(add_result_sql, (run_id, result, args, output, cputime,
-                  walltime, memusage))
+                                   walltime, memusage))
         self.conn.commit()
 
 class Game:
@@ -320,7 +320,7 @@ def main():
     # TODO: Clean this up so args.game and args.impl are used.
     for s in sources:
         for source in sources[s]:
-            for implname, impl in impls.iteritems():
+            for _, impl in impls.iteritems():
                 if impl.impl not in source.lang:
                     continue
                 b = Bench(db, impl, source)
