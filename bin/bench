@@ -15,7 +15,7 @@ from datetime import datetime
 from uuid import uuid4
 
 
-class Bench:
+class Bench(object):
     def __init__(self, db, impl, source):
         self.db = db
         self.impl = impl
@@ -95,7 +95,7 @@ class Bench:
         self.add_result(run_id, passed, exitstatus, cmd, stdout, rusage, wall_time)
         return exitstatus
 
-class BenchResults:
+class BenchResults(object):
     def __init__(self, db_path):
         self.db_path = db_path
         self.conn = sqlite3.connect(db_path)
@@ -158,7 +158,7 @@ class BenchResults:
                                    cputime, walltime, memusage))
         self.conn.commit()
 
-class Game:
+class Game(object):
     def __init__(self, game_name, game):
         self.name = game_name
         self.yaml_config = game
@@ -172,7 +172,7 @@ class Game:
         self.levels = self.yaml_config['levels']
         self.nicename = self.yaml_config.get('nicename', self.name)
 
-class GameSource:
+class GameSource(object):
     def __init__(self, source_file):
         self.source = source_file
         self.game = None
@@ -233,7 +233,7 @@ class GameSource:
     def is_valid(self):
         return 'GAME' in self.vars
 
-class Impl:
+class Impl(object):
     def __init__(self, impl_name, impl):
         self.name = impl_name
         self.yaml_config = impl
