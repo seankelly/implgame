@@ -351,8 +351,8 @@ def main():
 
     db = BenchResults(args.database)
 
-    for s in sources:
-        for source in sources[s]:
+    for game_name in sources:
+        for source in sources[game_name]:
             for _, impl in impls.iteritems():
                 if impl.impl not in source.lang:
                     continue
