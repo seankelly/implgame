@@ -12,6 +12,7 @@ import time
 import yaml
 from collections import defaultdict
 from datetime import datetime
+from uuid import uuid4
 
 
 class Bench:
@@ -112,7 +113,7 @@ class BenchResults:
             'run': {
                 'columns': ['id', 'when', 'impl', 'version'],
                 'schema': """CREATE TABLE run (
-                    id INTEGER PRIMARY KEY,
+                    id TEXT PRIMARY KEY,
                     run_when TEXT,
                     impl TEXT,
                     version TEXT
@@ -122,7 +123,7 @@ class BenchResults:
                 'columns': ['run_id', 'passed', 'exitstatus', 'cmd', 'output',
                             'cputime', 'walltime', 'memusage'],
                 'schema': """CREATE TABLE result (
-                    run_id INTEGER,
+                    run_id TEXT,
                     passed BOOLEAN,
                     exitstatus INTEGER,
                     cmd TEXT,
@@ -142,12 +143,12 @@ class BenchResults:
                     self.conn.commit()
 
     def add_run(self, when, impl, version):
-        add_run_sql = 'INSERT INTO run (run_when, impl, version) VALUES (?, ?, ?)'
+        run_id = str(uuid4())
+        add_run_sql = 'INSERT INTO run VALUES (?, ?, ?, ?)'
         c = self.conn.cursor()
-        c.execute(add_run_sql, (when, impl, version))
+        c.execute(add_run_sql, (run_id, when, impl, version))
         self.conn.commit()
-        row_id = c.lastrowid
-        return row_id
+        return run_id
 
     def add_result(self, run_id, passed, exitstatus, args, output, cputime,
                    walltime, memusage):
