@@ -312,6 +312,12 @@ def get_options():
                         default="all")
     return parser.parse_args()
 
+def filter_dict(d, key_list):
+    okay_keys = set([key.strip() for key in key_list.split(',')])
+    remove_keys = set(d) - okay_keys
+    for key in remove_keys:
+        del d[key]
+
 def main():
     args = get_options()
     cwd = os.getcwd()
@@ -335,13 +341,16 @@ def main():
     if args.game == 'list':
         print "Found games: %s" % (", ".join(sorted(games.keys())))
         return
+    elif args.game != 'all':
+        filter_dict(sources, args.game)
     if args.impl == 'list':
         print "Found implementations: %s" % (", ".join(sorted(impls.keys())))
         return
+    elif args.impl != 'all':
+        filter_dict(impls, args.impl)
 
     db = BenchResults(args.database)
 
-    # TODO: Clean this up so args.game and args.impl are used.
     for s in sources:
         for source in sources[s]:
             for _, impl in impls.iteritems():
