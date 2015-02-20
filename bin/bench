@@ -8,10 +8,10 @@ import shutil
 import sqlite3
 import subprocess
 import tempfile
-import time
 import yaml
 from collections import defaultdict
 from datetime import datetime
+from time import time
 from uuid import uuid4
 
 
@@ -75,12 +75,12 @@ class Bench(object):
             return 0
 
         cmd_l = shlex.split(cmd)
-        start_time = time.time()
+        start_time = time()
         process = subprocess.Popen(cmd_l, stdout=subprocess.PIPE,
                                    stderr=subprocess.STDOUT)
         _, exitstatus, rusage = os.wait4(process.pid, 0)
         stdout, _ = process.communicate()
-        end_time = time.time()
+        end_time = time()
         wall_time = end_time - start_time
 
         if expected is not None:
