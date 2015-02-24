@@ -323,7 +323,7 @@ def main():
     cwd = os.getcwd()
 
     if args.config_file is None:
-        config_file = os.path.join(cwd, 'implgame.yml')
+        config_file = os.path.join(cwd, 'implgame.yaml')
     else:
         config_file = args.config_file
 
