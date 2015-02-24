@@ -28,7 +28,7 @@ class Bench(object):
         tmpdir = tempfile.mkdtemp()
         game_vars['executable'] = self.impl.executable
         game_vars['source'] = self.source.source
-        output_file = '%s-%s' % (self.impl.name, self.source.game.nicename)
+        output_file = '%s-%s' % (self.impl.name, self.source.game.name)
         game_vars['output'] = os.path.join(tmpdir, output_file)
 
         now = datetime.now().isoformat()
@@ -164,13 +164,11 @@ class Game(object):
         self.yaml_config = game
         self.description = None
         self.levels = None
-        self.nicename = None
         self.load()
 
     def load(self):
         self.description = self.yaml_config['description']
         self.levels = self.yaml_config['levels']
-        self.nicename = self.yaml_config.get('nicename', self.name)
 
 class GameSource(object):
     def __init__(self, source_file):
@@ -263,8 +261,7 @@ def load_all_games(cfg_yml):
     games = {}
     for game_name, game in cfg_yml['game'].iteritems():
         g = Game(game_name, game)
-        nicename = g.nicename
-        games[nicename] = g
+        games[g.name] = g
     return games
 
 def load_all_impls(cfg_yml):

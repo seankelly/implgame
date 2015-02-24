@@ -29,8 +29,7 @@ impl:
     impl: c++
 
 game:
-  nbody:
-    nicename: n-body
+  n-body:
     description: Simulate motion of outer planets for N steps.
     levels:
       - args: 500000
