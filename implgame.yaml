@@ -30,7 +30,7 @@ impl:
 
 game:
   n-body:
-    description: Simulate motion of outer planets for N steps.
+    description: Perform an N-body simulation of the Jovian planets.
     levels:
       - args: 500000
         result: |
@@ -44,3 +44,27 @@ game:
         result: |
           -0.169075164
           -0.169059907
+  fannkuch-redux:
+    description: Repeatedly access a tiny integer-sequence.
+  meteor-contest:
+    description: Search for solutions to shape packing puzzle.
+  fasta:
+    description: Generate and write random DNA sequences.
+  spectral-norm:
+    description: Calculate an eigenvalue using the power method.
+  reverse-complement:
+    description: Read DNA sequences and write their reverse-complement.
+  mandelbrot:
+    description: Generate a Mandelbrot set and write a portable bitmap.
+  k-nucleotide:
+    description: Repeatedly update hashtables and k-nucleotide strings.
+  regex-dna:
+    description: Match DNA 8-mers and substitute nucleotides for IUB code.
+  pidigits:
+    description: Calculate the digits of Pi with streaming arbitrary-precision arithmetic.
+  chameneos-redux:
+    description: Repeatedly perform symmetrical thread rendezvous requests.
+  thread-ring:
+    description: Repeatedly switch from thread to thread passing one token.
+  binary-trees:
+    description: Allocate and deallocate many many binary trees.
