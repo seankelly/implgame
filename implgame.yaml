@@ -46,25 +46,71 @@ game:
           -0.169059907
   fannkuch-redux:
     description: Repeatedly access a tiny integer-sequence.
+    levels:
+      - args: 10
+      - args: 11
+      - args: 12
   meteor-contest:
     description: Search for solutions to shape packing puzzle.
+    levels:
+      - args: 2098
   fasta:
     description: Generate and write random DNA sequences.
+    levels:
+      - args: 250000
+      - args: 2500000
+      - args: 25000000
   spectral-norm:
     description: Calculate an eigenvalue using the power method.
+    levels:
+      - args: 500
+      - args: 3000
+      - args: 5500
   reverse-complement:
     description: Read DNA sequences and write their reverse-complement.
+    levels:
+      - args: 250000
+      - args: 2500000
+      - args: 25000000
   mandelbrot:
     description: Generate a Mandelbrot set and write a portable bitmap.
+    levels:
+      - args: 1000
+      - args: 4000
+      - args: 16000
   k-nucleotide:
     description: Repeatedly update hashtables and k-nucleotide strings.
+    levels:
+      - args: 250000
+      - args: 2500000
+      - args: 25000000
   regex-dna:
     description: Match DNA 8-mers and substitute nucleotides for IUB code.
+    levels:
+      - args: 50000
+      - args: 500000
+      - args: 5000000
   pidigits:
     description: Calculate the digits of Pi with streaming arbitrary-precision arithmetic.
+    levels:
+      - args: 2000
+      - args: 6000
+      - args: 10000
   chameneos-redux:
     description: Repeatedly perform symmetrical thread rendezvous requests.
+    levels:
+      - args: 60000
+      - args: 600000
+      - args: 6000000
   thread-ring:
     description: Repeatedly switch from thread to thread passing one token.
+    levels:
+      - args: 500000
+      - args: 5000000
+      - args: 50000000
   binary-trees:
     description: Allocate and deallocate many many binary trees.
+    levels:
+      - args: 12
+      - args: 16
+      - args: 20
