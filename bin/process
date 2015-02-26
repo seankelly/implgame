@@ -1,0 +1,25 @@
+#!/usr/bin/env python
+
+import argparse
+
+
+def get_options():
+    parser = argparse.ArgumentParser(description="The implementation game")
+    parser.add_argument("--config-file", metavar='FILE',
+                        help="YAML file containing all implementations.")
+    parser.add_argument("--database", "-d", metavar="DB",
+                        help="Output database to get results.",
+                        default="implgame.db")
+    parser.add_argument("--game-dir",
+                        help="Directory containing source for the games.")
+    parser.add_argument("--output-dir",
+                        help="Directory for finished site.",
+                        default="output")
+    return parser.parse_args()
+
+def main():
+    args = get_options()
+
+
+if __name__ == '__main__':
+    main()
