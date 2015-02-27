@@ -12,6 +12,9 @@ def get_options():
                         default="implgame.db")
     parser.add_argument("--game-dir",
                         help="Directory containing source for the games.")
+    parser.add_argument("--template-dir",
+                        help="Directory containing templates.",
+                        default="www")
     parser.add_argument("--output-dir",
                         help="Directory for finished site.",
                         default="output")
