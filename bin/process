@@ -4,6 +4,7 @@ import argparse
 import os
 import shutil
 import sqlite3
+import yaml
 from jinja2 import Environment, FileSystemLoader
 
 
@@ -37,7 +38,8 @@ def render_site(template_dir, output_dir):
 def get_options():
     parser = argparse.ArgumentParser(description="The implementation game")
     parser.add_argument("--config-file", metavar='FILE',
-                        help="YAML file containing all implementations.")
+                        help="YAML file containing all implementations.",
+                        default="implgame.yaml")
     parser.add_argument("--database", "-d", metavar="DB",
                         help="Output database to get results.",
                         default="implgame.db")
@@ -53,6 +55,8 @@ def get_options():
 
 def main():
     args = get_options()
+    with open(args.config_file, 'r') as cf:
+        config_file_yaml = yaml.safe_load(cf)
     render_site(args.template_dir, args.output_dir)
 
 
