@@ -14,33 +14,53 @@ class BenchResults():
         self.db_path = db_path
         self.conn = sqlite3.connect(db_path)
 
+class Site(object):
+    def __init__(self, config, db):
+        self.config = config
+        self.db = db
 
-def copy_static_files(template_dir, output_dir):
-    static_files = [
-        'css/bootstrap.min.css',
-    ]
+    def build_environment(self):
+        env = {
+            'games': self.all_games()
+        }
 
-    for static_file in static_files:
-        dir_path, _ = os.path.split(static_file)
-        dst_dir = os.path.join(output_dir, dir_path)
-        if not os.path.exists(dst_dir):
-            os.makedirs(dst_dir)
-        src_file = os.path.join(template_dir, static_file)
-        shutil.copy(src_file, dst_dir)
+    def all_games(self):
+        games = {}
+        for game_name in self.config['game']:
+            game = self.config['game'][game_name]
+            games[game_name] = {
+                'name': game_name,
+                'description': game['description'],
+            }
+        return games
 
-def render_templates(template_dir, output_dir):
-    env = Environment(loader=FileSystemLoader(template_dir))
-    # Arbitrary restriction right now to limit templates to HTML files.
-    templates = [t for t in env.list_templates() if t.endswith('html')]
-    for template_file in templates:
-        out_file = os.path.join(output_dir, template_file)
-        template = env.get_template(template_file)
-        with open(out_file, 'w') as f:
-            f.write(template.render())
+    def render(self, template_dir, output_dir):
+        self.copy_static_files(template_dir, output_dir)
+        self.render_templates(template_dir, output_dir)
 
-def render_site(template_dir, output_dir):
-    copy_static_files(template_dir, output_dir)
-    render_templates(template_dir, output_dir)
+
+    def copy_static_files(self, template_dir, output_dir):
+        static_files = [
+            'css/bootstrap.min.css',
+        ]
+
+        for static_file in static_files:
+            dir_path, _ = os.path.split(static_file)
+            dst_dir = os.path.join(output_dir, dir_path)
+            if not os.path.exists(dst_dir):
+                os.makedirs(dst_dir)
+            src_file = os.path.join(template_dir, static_file)
+            shutil.copy(src_file, dst_dir)
+
+    def render_templates(self, template_dir, output_dir):
+        env = Environment(loader=FileSystemLoader(template_dir))
+        # Arbitrary restriction right now to limit templates to HTML files.
+        templates = [t for t in env.list_templates() if t.endswith('html')]
+        for template_file in templates:
+            out_file = os.path.join(output_dir, template_file)
+            template = env.get_template(template_file)
+            with open(out_file, 'w') as f:
+                f.write(template.render())
 
 def get_options():
     parser = argparse.ArgumentParser(description="The implementation game")
@@ -66,7 +86,8 @@ def main():
         config_file_yaml = yaml.safe_load(cf)
 
     benchdb = BenchResults(args.database)
-    render_site(args.template_dir, args.output_dir)
+    site = Site(config_file_yaml, benchdb)
+    site.render(args.template_dir, args.output_dir)
 
 
 if __name__ == '__main__':
