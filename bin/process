@@ -18,11 +18,13 @@ class Site(object):
     def __init__(self, config, db):
         self.config = config
         self.db = db
+        self.template_env = self.build_environment()
 
     def build_environment(self):
         env = {
             'games': self.all_games()
         }
+        return env
 
     def all_games(self):
         games = {}
@@ -60,7 +62,7 @@ class Site(object):
             out_file = os.path.join(output_dir, template_file)
             template = env.get_template(template_file)
             with open(out_file, 'w') as f:
-                f.write(template.render())
+                f.write(template.render(self.template_env))
 
 def get_options():
     parser = argparse.ArgumentParser(description="The implementation game")
