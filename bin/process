@@ -4,6 +4,7 @@ import argparse
 import os
 import shutil
 import sqlite3
+from jinja2 import Environment, FileSystemLoader
 
 
 def copy_static_files(template_dir, output_dir):
@@ -19,8 +20,19 @@ def copy_static_files(template_dir, output_dir):
         src_file = os.path.join(template_dir, static_file)
         shutil.copy(src_file, dst_dir)
 
+def render_templates(template_dir, output_dir):
+    env = Environment(loader=FileSystemLoader(template_dir))
+    # Arbitrary restriction right now to limit templates to HTML files.
+    templates = [t for t in env.list_templates() if t.endswith('html')]
+    for template_file in templates:
+        out_file = os.path.join(output_dir, template_file)
+        template = env.get_template(template_file)
+        with open(out_file, 'w') as f:
+            f.write(template.render())
+
 def render_site(template_dir, output_dir):
     copy_static_files(template_dir, output_dir)
+    render_templates(template_dir, output_dir)
 
 def get_options():
     parser = argparse.ArgumentParser(description="The implementation game")
