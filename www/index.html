@@ -12,7 +12,14 @@
             <!-- div showing all implementations ranked in some way. -->
             <div id="impl-list"></div>
             <h2>Games</h2>
-            <div></div>
+            <div class="row">
+                {%- for game in games %}
+                <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12"><h4>{{ games[game].name }}</h4><p>{{ games[game].description }}</p></div>
+                {%- if loop.index % 6 == 0 %}
+                <div class="clearfix visible-lg-block visible-md-block"></div>
+                {%- endif %}
+                {%- endfor %}
+            </div>
             <h2>Implementations</h2>
             <div></div>
             <h2>About</h2>
