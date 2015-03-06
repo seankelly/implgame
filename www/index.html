@@ -21,6 +21,14 @@
                 {%- endfor %}
             </div>
             <h2>Implementations</h2>
+            <div class="row">
+                {%- for impl in impls %}
+                <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12"><h4>{{ impls[impl].name }}</h4></div>
+                {%- if loop.index % 6 == 0 %}
+                <div class="clearfix visible-lg-block visible-md-block"></div>
+                {%- endif %}
+                {%- endfor %}
+            </div>
             <div></div>
             <h2>About</h2>
             <div></div>

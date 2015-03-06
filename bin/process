@@ -22,7 +22,8 @@ class Site(object):
 
     def build_environment(self):
         env = {
-            'games': self.all_games()
+            'games': self.all_games(),
+            'impls': self.all_impls(),
         }
         return env
 
@@ -35,6 +36,15 @@ class Site(object):
                 'description': game['description'],
             }
         return games
+
+    def all_impls(self):
+        impls = {}
+        for impl_name in self.config['impl']:
+            impl = self.config['impl'][impl_name]
+            impls[impl_name] = {
+                'name': impl_name,
+            }
+        return impls
 
     def render(self, template_dir, output_dir):
         self.copy_static_files(template_dir, output_dir)
