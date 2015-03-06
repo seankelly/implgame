@@ -42,7 +42,7 @@ class Site(object):
         for impl_name in self.config['impl']:
             impl = self.config['impl'][impl_name]
             impls[impl_name] = {
-                'name': impl_name,
+                'name': impl['name'],
             }
         return impls
 

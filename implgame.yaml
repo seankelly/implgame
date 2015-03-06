@@ -1,6 +1,7 @@
 ---
 impl:
   gcc48:
+    name: gcc 4.8.4
     executable: gcc
     version: "%(executable)s --version"
     build: "%(executable)s -O2 %(CFLAGS)s %(LDFLAGS)s %(source)s -o %(output)s"
@@ -8,6 +9,7 @@ impl:
     impl: c
 
   g++48:
+    name: g++ 4.8.4
     executable: g++
     version: "%(executable)s --version"
     build: "%(executable)s -O2 %(CFLAGS)s %(LDFLAGS)s %(source)s -o %(output)s"
@@ -15,6 +17,7 @@ impl:
     impl: c++
 
   clang:
+    name: clang 3.4.2
     executable: clang
     version: "%(executable)s --version"
     build: "%(executable)s -O2 %(CFLAGS)s %(LDFLAGS)s %(source)s -o %(output)s"
@@ -22,6 +25,7 @@ impl:
     impl: c
 
   clang++:
+    name: clang++ 3.4.2
     executable: clang++
     version: "%(executable)s --version"
     build: "%(executable)s -O2 %(CFLAGS)s %(LDFLAGS)s %(source)s -o %(output)s"
