@@ -55,10 +55,13 @@ class Bench(object):
 
     def run(self, run_id, game_vars):
         for level in self.source.game.levels:
-            game_vars['args'] = level['args']
-            expected = level['result']
-            cmd = self.impl.run % game_vars
-            self.execute(run_id, cmd, expected)
+            for _ in range(5):
+                game_vars['args'] = level['args']
+                expected = level['result']
+                cmd = self.impl.run % game_vars
+                exitstatus = self.execute(run_id, cmd, expected)
+                if exitstatus != 0:
+                    break
 
     def add_result(self, run_id, passed, exitstatus, cmd, output, rusage, walltime):
         # run_id, result, cmd, output, cputime, walltime, memusage
