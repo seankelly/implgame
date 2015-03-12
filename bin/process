@@ -66,13 +66,12 @@ class Site(object):
 
     def render_templates(self, template_dir, output_dir):
         env = Environment(loader=FileSystemLoader(template_dir))
-        # Arbitrary restriction right now to limit templates to HTML files.
-        templates = [t for t in env.list_templates() if t.endswith('html')]
-        for template_file in templates:
-            out_file = os.path.join(output_dir, template_file)
-            template = env.get_template(template_file)
-            with open(out_file, 'w') as f:
-                f.write(template.render(self.template_env))
+
+        # Render the index file first.
+        index_file = os.path.join(output_dir, 'index.html')
+        template = env.get_template('index.html')
+        with open(index_file, 'w') as f:
+            f.write(template.render(self.template_env))
 
 def get_options():
     parser = argparse.ArgumentParser(description="The implementation game")
