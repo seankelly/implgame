@@ -108,15 +108,13 @@ class BenchResults(object):
 
     def check_db(self):
         """
-        Check the database to ensure it has the right tables and the tables
-        have the right columns.
+        Check the database to ensure it has the right tables.
         """
         # Using an ORM would obviate much of this but I want to keep this
         # lightweight and hopefully simple.
         c = self.conn.cursor()
         table_schema = {
             'run': {
-                'columns': ['id', 'when', 'impl', 'version'],
                 'schema': """CREATE TABLE run (
                     id TEXT PRIMARY KEY,
                     run_when TEXT,
@@ -125,8 +123,6 @@ class BenchResults(object):
                 )""",
             },
             'result': {
-                'columns': ['run_id', 'passed', 'exitstatus', 'cmd', 'level',
-                            'output', 'cputime', 'walltime', 'memusage'],
                 'schema': """CREATE TABLE result (
                     run_id TEXT,
                     passed BOOLEAN,
