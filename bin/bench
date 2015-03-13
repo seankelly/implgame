@@ -32,7 +32,8 @@ class Bench(object):
         game_vars['output'] = os.path.join(tmpdir, output_file)
 
         now = datetime.now().isoformat()
-        run_id = self.db.add_run(now, self.impl.name, self.impl.get_version())
+        run_id = self.db.add_run(now, self.impl.name, self.source.game.name,
+                                 self.impl.get_version())
 
         build_result = self.build(run_id, game_vars)
         # If the build failed, can't run the executables.
@@ -119,6 +120,7 @@ class BenchResults(object):
                     id TEXT PRIMARY KEY,
                     run_when TEXT,
                     impl TEXT,
+                    game TEXT,
                     version TEXT
                 )""",
             },
@@ -144,11 +146,11 @@ class BenchResults(object):
                     c.execute(table_schema[table]['schema'])
                     self.conn.commit()
 
-    def add_run(self, when, impl, version):
+    def add_run(self, when, impl, game, version):
         run_id = str(uuid4())
-        add_run_sql = 'INSERT INTO run VALUES (?, ?, ?, ?)'
+        add_run_sql = 'INSERT INTO run VALUES (?, ?, ?, ?, ?)'
         c = self.conn.cursor()
-        c.execute(add_run_sql, (run_id, when, impl, version))
+        c.execute(add_run_sql, (run_id, when, impl, game, version))
         self.conn.commit()
         return run_id
 
