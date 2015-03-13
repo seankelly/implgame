@@ -13,6 +13,18 @@ class BenchResults():
     def __init__(self, db_path):
         self.db_path = db_path
         self.conn = sqlite3.connect(db_path)
+        self.conn.row_factory = sqlite3.Row
+        self.runs_cached = {}
+        self._load_runs()
+
+    def _load_runs(self):
+        cursor = self.conn.cursor()
+        cursor.execute("SELECT id, run_when, impl, game, version FROM run")
+        for row in cursor:
+            run = (row['impl'], row['game'])
+            if (run not in self.runs_cached or
+                    self.runs_cached[run]['run_when'] < row['run_when']):
+                self.runs_cached[run] = row
 
 class Site(object):
     def __init__(self, config, db):
