@@ -15,6 +15,16 @@ class BenchResults(object):
         self.conn = sqlite3.connect(db_path)
         self.conn.row_factory = sqlite3.Row
         self.runs_cached = self._load_runs(self.conn)
+        self.results = {}
+
+    def get_result(self, impl=None, game=None):
+        runs = self.runs_cached.keys()
+        if impl is not None:
+            runs = [r for r in runs if r['impl'] == impl]
+        if game is not None:
+            runs = [r for r in runs if r['game'] == game]
+        results = [self._load_result(run['id']) for run in runs]
+        return results
 
     @staticmethod
     def _load_runs(conn):
@@ -27,6 +37,17 @@ class BenchResults(object):
                     cache[run]['run_when'] < row['run_when']):
                 cache[run] = row
         return cache
+
+    def _load_result(self, run_id):
+        if run_id in self.results:
+            return self.results[run_id]
+        cursor = self.conn.cursor()
+        cursor.execute("SELECT run_id, passed, exitstatus, cmd, level, output, cputime, walltime, memusage FROM result WHERE run_id = ? ORDER BY level desc", run_id)
+        result_cache = []
+        for row in cursor:
+            result_cache.append(row)
+        self.results[run_id] = result_cache
+        return result_cache
 
 class Site(object):
     def __init__(self, config, db):
