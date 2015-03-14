@@ -9,7 +9,7 @@ from jinja2 import Environment, FileSystemLoader
 
 
 # Some minor code duplication. Trying to keep it to a minimum!
-class BenchResults():
+class BenchResults(object):
     def __init__(self, db_path):
         self.db_path = db_path
         self.conn = sqlite3.connect(db_path)
