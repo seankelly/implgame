@@ -15,7 +15,22 @@ class BenchResults(object):
         self.conn = sqlite3.connect(db_path)
         self.conn.row_factory = sqlite3.Row
         self.runs_cached = self._load_runs(self.conn)
+        self.games = set()
+        self.impls = set()
         self.results = {}
+
+    def all_results(self):
+        results = {'impl': {}, 'game': {}}
+        for run_id in self.runs_cached.keys():
+            run = self.runs_cached[run_id]
+            impl, game = run_id
+            if impl not in results['impl']:
+                results['impl'][impl] = []
+            results['impl'][impl].append(run)
+            if game not in results['game']:
+                results['game'][game] = []
+            results['game'][game].append(run)
+        return results
 
     def get_result(self, impl=None, game=None):
         runs = self.runs_cached.keys()
@@ -59,6 +74,7 @@ class Site(object):
         env = {
             'games': self.all_games(),
             'impls': self.all_impls(),
+            'results': self.results.all_results(),
         }
         return env
 
