@@ -137,6 +137,7 @@ class Site(object):
         with open(index_file, 'w') as f:
             f.write(template.render(self.template_env))
 
+        self.render_page_group(env, output_dir, 'impl')
         self.render_page_group(env, output_dir, 'game')
 
 def get_options():
