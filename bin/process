@@ -115,6 +115,19 @@ class Site(object):
             src_file = os.path.join(template_dir, static_file)
             shutil.copy(src_file, dst_dir)
 
+    def render_page_group(self, env, output_dir, group):
+        group_html = '%s.html' % group
+        group_key = '%ss' % group
+        template = env.get_template(group_html)
+        for page in self.template_env[group_key]:
+            group_file = os.path.join(output_dir, '%s-%s.html' % (group, page))
+            group_env = {
+                group: page,
+                'results': self.template_env['results'][group].get(page, []),
+            }
+            with open(group_file, 'w') as output:
+                output.write(template.render(group_env))
+
     def render_templates(self, template_dir, output_dir):
         env = Environment(loader=FileSystemLoader(template_dir))
 
@@ -124,15 +137,7 @@ class Site(object):
         with open(index_file, 'w') as f:
             f.write(template.render(self.template_env))
 
-        template = env.get_template('game.html')
-        for game in self.template_env['games']:
-            game_file = os.path.join(output_dir, 'game-%s.html' % game)
-            game_env = {
-                'game': game,
-                'results': self.template_env['results']['game'].get(game, []),
-            }
-            with open(game_file, 'w') as output:
-                output.write(template.render(game_env))
+        self.render_page_group(env, output_dir, 'game')
 
 def get_options():
     parser = argparse.ArgumentParser(description="The implementation game")
