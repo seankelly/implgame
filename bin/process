@@ -124,6 +124,16 @@ class Site(object):
         with open(index_file, 'w') as f:
             f.write(template.render(self.template_env))
 
+        template = env.get_template('game.html')
+        for game in self.template_env['games']:
+            game_file = os.path.join(output_dir, 'game-%s.html' % game)
+            game_env = {
+                'game': game,
+                'results': self.template_env['results']['game'].get(game, []),
+            }
+            with open(game_file, 'w') as output:
+                output.write(template.render(game_env))
+
 def get_options():
     parser = argparse.ArgumentParser(description="The implementation game")
     parser.add_argument("--config-file", metavar='FILE',
