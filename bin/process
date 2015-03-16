@@ -50,9 +50,9 @@ class BenchResults(object):
         return result_cache
 
 class Site(object):
-    def __init__(self, config, db):
+    def __init__(self, config, results):
         self.config = config
-        self.db = db
+        self.results = results
         self.template_env = self.build_environment()
 
     def build_environment(self):
