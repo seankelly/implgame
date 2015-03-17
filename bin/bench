@@ -60,7 +60,7 @@ class Bench(object):
                 game_vars['args'] = level['args']
                 expected = level['result']
                 cmd = self.impl.run % game_vars
-                exitstatus = self.execute(run_id, cmd, str(level), expected)
+                exitstatus = self.execute(run_id, cmd, level['args'], expected)
                 if exitstatus != 0:
                     break
 
@@ -130,7 +130,7 @@ class BenchResults(object):
                     passed BOOLEAN,
                     exitstatus INTEGER,
                     cmd TEXT,
-                    level TEXT,
+                    level INTEGER,
                     output TEXT,
                     cputime REAL,
                     walltime REAL,
