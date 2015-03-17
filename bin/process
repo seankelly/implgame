@@ -97,7 +97,7 @@ class BenchResults(object):
         if run_id in self.results:
             return self.results[run_id]
         cursor = self.conn.cursor()
-        cursor.execute("SELECT run_id, passed, exitstatus, cmd, level, output, cputime, walltime, memusage FROM result WHERE run_id = ? ORDER BY level desc", run_id)
+        cursor.execute("SELECT run_id, passed, exitstatus, cmd, level, output, cputime, walltime, memusage FROM result WHERE run_id = ? ORDER BY level desc", (run_id,))
         result_cache = []
         for row in cursor:
             result_cache.append(row)
