@@ -21,15 +21,23 @@ class BenchResults(object):
 
     def all_results(self):
         results = {'impl': {}, 'game': {}}
-        for run_id in self.runs_cached.keys():
-            run = self.runs_cached[run_id]
-            impl, game = run_id
+        for run_tuple in self.runs_cached.keys():
+            run = self.runs_cached[run_tuple]
+            impl, game = run_tuple
+            # Get the best result for this run and tag it with the
+            # implementation of game used. Add the result to the list of best
+            # runs for each implementation and game.
+            run_id = run['id']
+            best_result = self.get_best_result(run_id)
+            best_result['impl'] = impl
+            best_result['game'] = game
+            best_result['when'] = run['run_when']
             if impl not in results['impl']:
                 results['impl'][impl] = []
-            results['impl'][impl].append(run)
+            results['impl'][impl].append(best_result)
             if game not in results['game']:
                 results['game'][game] = []
-            results['game'][game].append(run)
+            results['game'][game].append(best_result)
         return results
 
     def get_best_result(self, run_id):
