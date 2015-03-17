@@ -32,14 +32,46 @@ class BenchResults(object):
             results['game'][game].append(run)
         return results
 
-    def get_result(self, impl=None, game=None):
-        runs = self.runs_cached.keys()
-        if impl is not None:
-            runs = [r for r in runs if r['impl'] == impl]
-        if game is not None:
-            runs = [r for r in runs if r['game'] == game]
-        results = [self._load_result(run['id']) for run in runs]
-        return results
+    def get_best_result(self, run_id):
+        def set_best_run(summary, passed, exitstatus, cmd, level, output,
+                         cputime, walltime, memusage):
+            summary[level] = {
+                'passed': passed,
+                'exitstatus': exitstatus,
+                'cmd': cmd,
+                'level': level,
+                'output': output,
+            }
+            if cputime is not None:
+                summary[level]['cputime'] = cputime
+            if walltime is not None:
+                summary[level]['walltime'] = walltime
+            if memusage is not None:
+                summary[level]['memusage'] = memusage
+        summary = {}
+        for result in self._load_result(run_id):
+            (_, passed, exitstatus, cmd, level, output, cputime,
+             walltime, memusage) = result
+            if level in summary:
+                best_run = summary[level]
+                if not best_run['passed']:
+                    # If the "best" run failed, skip trying to find the best
+                    # run for this level.
+                    continue
+                if not passed:
+                    # If it failed, set this level to the failed one.
+                    set_best_run(summary, passed, exitstatus, cmd, level,
+                                 output, cputime, walltime, memusage)
+                elif cputime < best_run['cputime']:
+                    best_run['cputime'] = cputime
+                elif walltime < best_run['walltime']:
+                    best_run['walltime'] = walltime
+                elif memusage > best_run['memusage']:
+                    best_run['memusage'] = memusage
+            else:
+                set_best_run(summary, passed, exitstatus, cmd, level, output,
+                             cputime, walltime, memusage)
+        return summary
 
     @staticmethod
     def _load_runs(conn):
