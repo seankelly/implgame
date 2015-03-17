@@ -57,6 +57,9 @@ class BenchResults(object):
         for result in self._load_result(run_id):
             (_, passed, exitstatus, cmd, level, output, cputime,
              walltime, memusage) = result
+            # If level isn't set, this is the compile step. Skip it!
+            if level == '':
+                continue
             if level in summary:
                 best_run = summary[level]
                 if not best_run['passed']:
