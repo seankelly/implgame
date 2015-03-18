@@ -29,9 +29,10 @@ class BenchResults(object):
             # implementation of game used. Add the result to the list of best
             # runs for each implementation and game.
             run_id = run['id']
+            impl_name = self.config_file['impl'][impl]['name']
             best_result = self.get_best_result(run_id)
             for level in best_result:
-                best_result[level]['impl'] = impl
+                best_result[level]['impl'] = impl_name
                 best_result[level]['game'] = game
                 best_result[level]['when'] = run['run_when']
             highest_level = self.config_file['game'][game]['levels'][-1]['args']
