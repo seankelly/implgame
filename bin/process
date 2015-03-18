@@ -30,15 +30,17 @@ class BenchResults(object):
             # runs for each implementation and game.
             run_id = run['id']
             best_result = self.get_best_result(run_id)
-            best_result['impl'] = impl
-            best_result['game'] = game
-            best_result['when'] = run['run_when']
+            for level in best_result:
+                best_result[level]['impl'] = impl
+                best_result[level]['game'] = game
+                best_result[level]['when'] = run['run_when']
+            highest_level = self.config_file['game'][game]['levels'][-1]['args']
             if impl not in results['impl']:
                 results['impl'][impl] = []
-            results['impl'][impl].append(best_result)
+            results['impl'][impl].append(best_result[highest_level])
             if game not in results['game']:
                 results['game'][game] = []
-            results['game'][game].append(best_result)
+            results['game'][game].append(best_result[highest_level])
         return results
 
     def get_best_result(self, run_id):
