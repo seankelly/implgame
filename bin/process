@@ -10,7 +10,8 @@ from jinja2 import Environment, FileSystemLoader
 
 # Some minor code duplication. Trying to keep it to a minimum!
 class BenchResults(object):
-    def __init__(self, db_path):
+    def __init__(self, config_file_yaml, db_path):
+        self.config_file = config_file_yaml
         self.db_path = db_path
         self.conn = sqlite3.connect(db_path)
         self.conn.row_factory = sqlite3.Row
@@ -203,7 +204,7 @@ def main():
     with open(args.config_file, 'r') as cf:
         config_file_yaml = yaml.safe_load(cf)
 
-    benchdb = BenchResults(args.database)
+    benchdb = BenchResults(config_file_yaml, args.database)
     site = Site(config_file_yaml, benchdb)
     site.render(args.template_dir, args.output_dir)
 
