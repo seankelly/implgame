@@ -9,12 +9,12 @@
     <body>
         <div class="container">
             <table class="table">
-                <tr><th>Implementation</th><th>CPU Time</th><th>Memory Used</th></tr>
+                <tr><th>Implementation</th><th>CPU Time (secs)</th><th>Wall Time (secs)</th><th>Memory Used (KB)</th></tr>
                 {%- for result in results|sort %}
                 {%- if result.passed %}
-                <tr><td>{{ result.impl }}</td><td>{{ result.cputime }}</td><td>{{ result.memusage }}</td></tr>
+                <tr><td>{{ result.impl }}</td><td>{{ result.cputime|round(3) }}</td><td>{{ result.walltime|round(3) }}</td><td>{{ result.memusage }}</td></tr>
                 {%- else %}
-                <tr><td>{{ result.impl }}</td><td>Failed</td><td>Failed</td></tr>
+                <tr><td>{{ result.impl }}</td><td>Failed</td><td>Failed</td><td>Failed</td></tr>
                 {%- endif %}
                 {%- endfor %}
             </table>
