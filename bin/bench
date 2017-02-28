@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import argparse
 import re
@@ -23,7 +23,7 @@ class Bench(object):
 
     def bench(self):
         game_vars = defaultdict(lambda: '')
-        for k, v in self.source.vars.iteritems():
+        for k, v in self.source.vars.items():
             game_vars[k] = v
         tmpdir = tempfile.mkdtemp()
         game_vars['executable'] = self.impl.executable
@@ -225,7 +225,7 @@ class GameSource(object):
         for meta in meta_data:
             _, option, value = meta
             if option == 'LANG':
-                if isinstance(value, basestring):
+                if isinstance(value, str):
                     self.lang.add(value)
                 else:
                     self.lang.update(value)
@@ -263,14 +263,14 @@ class Impl(object):
 
 def load_all_games(cfg_yml):
     games = {}
-    for game_name, game in cfg_yml['game'].iteritems():
+    for game_name, game in cfg_yml['game'].items():
         g = Game(game_name, game)
         games[g.name] = g
     return games
 
 def load_all_impls(cfg_yml):
     impls = {}
-    for impl_name, impl in cfg_yml['impl'].iteritems():
+    for impl_name, impl in cfg_yml['impl'].items():
         i = Impl(impl_name, impl)
         impls[impl_name] = i
     return impls
@@ -340,12 +340,12 @@ def main():
     sources = load_all_sources(game_dir, games)
 
     if args.game == 'list':
-        print "Found games: %s" % (", ".join(sorted(games.keys())))
+        print("Found games: %s" % (", ".join(sorted(games.keys()))))
         return
     elif args.game != 'all':
         filter_dict(sources, args.game)
     if args.impl == 'list':
-        print "Found implementations: %s" % (", ".join(sorted(impls.keys())))
+        print("Found implementations: %s" % (", ".join(sorted(impls.keys()))))
         return
     elif args.impl != 'all':
         filter_dict(impls, args.impl)
@@ -354,7 +354,7 @@ def main():
 
     for game_name in sources:
         for source in sources[game_name]:
-            for _, impl in impls.iteritems():
+            for _, impl in impls.items():
                 if impl.impl not in source.lang:
                     continue
                 b = Bench(db, impl, source)

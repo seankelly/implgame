@@ -22,7 +22,7 @@ class BenchResults(object):
 
     def all_results(self):
         results = {'impl': {}, 'game': {}}
-        for run_tuple in self.runs_cached.keys():
+        for run_tuple in list(self.runs_cached.keys()):
             run = self.runs_cached[run_tuple]
             impl, game = run_tuple
             # Get the best result for this run and tag it with the
