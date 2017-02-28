@@ -5,7 +5,13 @@ import os
 import shutil
 import sqlite3
 import yaml
+from collections import namedtuple
 from jinja2 import Environment, FileSystemLoader
+
+
+Result = namedtuple('Result', ['run_id', 'passed', 'exitstatus', 'cmd',
+                               'level', 'output', 'cputime', 'walltime',
+                               'memusage', 'impl', 'game', 'run_when'])
 
 
 # Some minor code duplication. Trying to keep it to a minimum!
@@ -31,10 +37,6 @@ class BenchResults(object):
             run_id = run['id']
             impl_name = self.config_file['impl'][impl]['name']
             best_result = self.get_best_result(run_id)
-            for level in best_result:
-                best_result[level]['impl'] = impl_name
-                best_result[level]['game'] = game
-                best_result[level]['when'] = run['run_when']
             highest_level = self.config_file['game'][game]['levels'][-1]['args']
             if impl not in results['impl']:
                 results['impl'][impl] = []
@@ -45,44 +47,22 @@ class BenchResults(object):
         return results
 
     def get_best_result(self, run_id):
-        def set_best_run(summary, passed, exitstatus, cmd, level, output,
-                         cputime, walltime, memusage):
-            summary[level] = {
-                'passed': passed,
-                'exitstatus': exitstatus,
-                'cmd': cmd,
-                'level': level,
-                'output': output,
-                'cputime': cputime,
-                'walltime': walltime,
-                'memusage': memusage,
-            }
         summary = {}
         for result in self._load_result(run_id):
-            (_, passed, exitstatus, cmd, level, output, cputime,
-             walltime, memusage) = result
-            # If level isn't set, this is the compile step. Skip it!
-            if level == '':
-                continue
-            if level in summary:
+            level = result.level
+            if result.level in summary:
                 best_run = summary[level]
-                if not best_run['passed']:
+                if not best_run.passed:
                     # If the "best" run failed, skip trying to find the best
                     # run for this level.
                     continue
                 if not passed:
                     # If it failed, set this level to the failed one.
-                    set_best_run(summary, passed, exitstatus, cmd, level,
-                                 output, cputime, walltime, memusage)
-                elif cputime < best_run['cputime']:
-                    best_run['cputime'] = cputime
-                elif walltime < best_run['walltime']:
-                    best_run['walltime'] = walltime
-                elif memusage > best_run['memusage']:
-                    best_run['memusage'] = memusage
+                    summary[level] = result
+                elif cputime < best_run.cputime:
+                    summary[level] = result
             else:
-                set_best_run(summary, passed, exitstatus, cmd, level, output,
-                             cputime, walltime, memusage)
+                summary[level] = result
         return summary
 
     @staticmethod
@@ -101,10 +81,11 @@ class BenchResults(object):
         if run_id in self.results:
             return self.results[run_id]
         cursor = self.conn.cursor()
-        cursor.execute("SELECT run_id, passed, exitstatus, cmd, level, output, cputime, walltime, memusage FROM result WHERE run_id = ? ORDER BY level desc", (run_id,))
-        result_cache = []
-        for row in cursor:
-            result_cache.append(row)
+        cursor.execute(
+                "SELECT run_id, passed, exitstatus, cmd, level, output, cputime, walltime, memusage, impl, game, run_when "
+                "FROM result JOIN run on run_id = run.id "
+                "WHERE run_id = ? ORDER BY level desc", (run_id,))
+        result_cache = [Result._make(row) for row in cursor.fetchall()]
         self.results[run_id] = result_cache
         return result_cache
 
