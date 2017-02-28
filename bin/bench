@@ -22,6 +22,7 @@ class Bench(object):
         self.source = source
 
     def bench(self):
+        """Bench one implementation and source file."""
         game_vars = defaultdict(lambda: '')
         for k, v in self.source.vars.items():
             game_vars[k] = v
@@ -45,6 +46,7 @@ class Bench(object):
         os.rmdir(tmpdir)
 
     def build(self, run_id, game_vars):
+        """Compile, if necessary, the source file by the implementation."""
         # Copy the source file to the output file. This will probably put the
         # file into the cache, but that is not the (primary) goal. The point is
         # to put the file that gets executed in the temporary directory.
@@ -55,6 +57,7 @@ class Bench(object):
         return self.execute(run_id, cmd, '')
 
     def run(self, run_id, game_vars):
+        """Run the code and verify it has the expected output."""
         for level in self.source.game.levels:
             for _ in range(5):
                 game_vars['args'] = level['args']
@@ -73,9 +76,11 @@ class Bench(object):
                            cputime, walltime, memusage)
 
     def execute(self, run_id, cmd, level, expected=None):
-        # If the command to run is the empty string, treat it as a no-op. This is
-        # to make it simpler to keep what no-op executions have to return and
-        # what really gets returned from usual commands being run.
+        """Execute the command. If the command to run is the empty string,
+        treat it as a no-op.
+        """
+        # This is to make it simpler to keep what no-op executions have to
+        # return and what really gets returned from usual commands being run.
         if not cmd:
             return 0
 
