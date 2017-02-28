@@ -147,7 +147,7 @@ class BenchResults(object):
             try:
                 c.execute("SELECT * FROM " + table)
             except sqlite3.OperationalError as exc:
-                if exc.message.startswith('no such table:'):
+                if exc.args[0].startswith('no such table:'):
                     c.execute(table_schema[table]['schema'])
                     self.conn.commit()
 
