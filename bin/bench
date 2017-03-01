@@ -7,6 +7,7 @@ import shlex
 import shutil
 import sqlite3
 import subprocess
+import sys
 import tempfile
 import yaml
 from collections import defaultdict
@@ -98,7 +99,9 @@ class Bench(object):
             # If some output was expected, strip leading and trailing
             # whitespace from the expected string and stdout and then compare
             # the two.
-            passed = expected.strip() == stdout.strip()
+            chomped_expected = expected.strip()
+            chomped_stdout = stdout.strip().decode(sys.getfilesystemencoding())
+            passed = chomped_expected == chomped_stdout
         else:
             # If nothing expected, then it passed if the command had an exit
             # status of zero.
