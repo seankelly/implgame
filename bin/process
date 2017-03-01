@@ -57,10 +57,10 @@ class BenchResults(object):
                     # If the "best" run failed, skip trying to find the best
                     # run for this level.
                     continue
-                if not passed:
+                if not result.passed:
                     # If it failed, set this level to the failed one.
                     summary[level] = result
-                elif cputime < best_run.cputime:
+                elif result.cputime < best_run.cputime:
                     summary[level] = result
             else:
                 summary[level] = result
