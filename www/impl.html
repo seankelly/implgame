@@ -12,9 +12,9 @@
                 <tr><th>Game</th><th>CPU Time (secs)</th><th>Wall Time (secs)</th><th>Memory Used (KB)</th></tr>
                 {%- for result in results|sort %}
                 {%- if result.passed %}
-                <tr><td>{{ result.impl }}</td><td>{{ result.cputime|round(3) }}</td><td>{{ result.walltime|round(3) }}</td><td>{{ result.memusage }}</td></tr>
+                <tr><td>{{ result.game }}</td><td>{{ result.cputime|round(3) }}</td><td>{{ result.walltime|round(3) }}</td><td>{{ result.memusage }}</td></tr>
                 {%- else %}
-                <tr><td>{{ result.impl }}</td><td>Failed</td><td>Failed</td><td>Failed</td></tr>
+                <tr><td>{{ result.game }}</td><td>Failed</td><td>Failed</td><td>Failed</td></tr>
                 {%- endif %}
                 {%- endfor %}
             </table>
