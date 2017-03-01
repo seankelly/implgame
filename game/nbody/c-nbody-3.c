@@ -1,4 +1,11 @@
-/* The Computer Language Benchmarks Game
+/*
+ * GAME=n-body
+ * CFLAGS=-O3 -Wall -fomit-frame-pointer -march=native -mfpmath=sse -msse3 -pipe
+ * LDFLAGS=-lm
+ * LANG=c
+ *
+ * Originally from:
+ * The Computer Language Benchmarks Game
  * http://benchmarksgame.alioth.debian.org/
  *
  * contributed by Ledrug Katz

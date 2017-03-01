@@ -1,4 +1,10 @@
-/* The Computer Language Benchmarks Game
+/*
+ * GAME=n-body
+ * CFLAGS=--std=c++11 -O3 -fomit-frame-pointer -fopenmp -march=native -mfpmath=sse -msse3 -pipe
+ * LANG=c++
+ *
+ * Originally from:
+ * The Computer Language Benchmarks Game
    http://benchmarksgame.alioth.debian.org/
 
    contributed by Mark C. Lewis
