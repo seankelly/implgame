@@ -8,6 +8,7 @@
     </head>
     <body>
         <div class="container">
+            <h1>{{ game }} Results</h1>
             <table class="table">
                 <tr><th>Implementation</th><th>CPU Time (secs)</th><th>Wall Time (secs)</th><th>Memory Used (KB)</th></tr>
                 {%- for result in results|sort %}
