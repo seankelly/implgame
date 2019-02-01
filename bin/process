@@ -4,9 +4,10 @@ import argparse
 import os
 import shutil
 import sqlite3
-import yaml
 from collections import namedtuple
+
 from jinja2 import Environment, FileSystemLoader
+import yaml
 
 
 Result = namedtuple('Result', ['run_id', 'passed', 'exitstatus', 'cmd',

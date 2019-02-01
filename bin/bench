@@ -9,11 +9,12 @@ import sqlite3
 import subprocess
 import sys
 import tempfile
-import yaml
 from collections import defaultdict
 from datetime import datetime
 from time import time
 from uuid import uuid4
+
+import yaml
 
 
 class Bench(object):
