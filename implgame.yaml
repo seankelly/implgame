@@ -1,31 +1,31 @@
 ---
 impl:
-  gcc6:
-    name: gcc 6
+  gcc8:
+    name: gcc 8
     executable: gcc
     version: "%(executable)s --version"
     build: "%(executable)s -O2 %(CFLAGS)s %(LDFLAGS)s %(source)s -o %(output)s"
     run: "%(output)s"
     impl: c
 
-  g++6:
-    name: g++ 6
+  g++8:
+    name: g++ 8
     executable: g++
     version: "%(executable)s --version"
     build: "%(executable)s -O2 %(CFLAGS)s %(LDFLAGS)s %(source)s -o %(output)s"
     run: "%(output)s %(args)s"
     impl: c++
 
-  clang38:
-    name: clang 3.8
+  clang7:
+    name: clang 7
     executable: clang
     version: "%(executable)s --version"
     build: "%(executable)s -O2 %(CFLAGS)s %(LDFLAGS)s %(source)s -o %(output)s"
     run: "%(output)s %(args)s"
     impl: c
 
-  clang++38:
-    name: clang++ 3.8
+  clang++7:
+    name: clang++ 7
     executable: clang++
     version: "%(executable)s --version"
     build: "%(executable)s -O2 %(CFLAGS)s %(LDFLAGS)s %(source)s -o %(output)s"
