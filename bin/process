@@ -91,6 +91,7 @@ class BenchResults(object):
         self.results[run_id] = result_cache
         return result_cache
 
+
 class Site(object):
     def __init__(self, config, results):
         self.config = config
@@ -167,6 +168,7 @@ class Site(object):
         self.render_page_group(env, output_dir, 'impl')
         self.render_page_group(env, output_dir, 'game')
 
+
 def get_options():
     parser = argparse.ArgumentParser(description="The implementation game")
     parser.add_argument("--config-file", metavar='FILE',
@@ -184,6 +186,7 @@ def get_options():
                         help="Directory for finished site.",
                         default="output")
     return parser.parse_args()
+
 
 def main():
     args = get_options()

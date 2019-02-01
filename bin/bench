@@ -111,6 +111,7 @@ class Bench(object):
                         wall_time)
         return exitstatus
 
+
 class BenchResults(object):
     def __init__(self, db_path):
         self.db_path = db_path
@@ -172,6 +173,7 @@ class BenchResults(object):
                                    output, cputime, walltime, memusage))
         self.conn.commit()
 
+
 class Game(object):
     def __init__(self, game_name, game):
         self.name = game_name
@@ -183,6 +185,7 @@ class Game(object):
     def load(self):
         self.description = self.yaml_config['description']
         self.levels = self.yaml_config['levels']
+
 
 class GameSource(object):
     def __init__(self, source_file):
@@ -248,6 +251,7 @@ class GameSource(object):
     def is_valid(self):
         return 'GAME' in self.vars
 
+
 class Impl(object):
     def __init__(self, impl_name, impl):
         self.name = impl_name
@@ -277,6 +281,7 @@ class Impl(object):
         stdout, _ = process.communicate()
         return stdout
 
+
 def load_all_games(cfg_yml):
     games = {}
     for game_name, game in cfg_yml['game'].items():
@@ -284,12 +289,14 @@ def load_all_games(cfg_yml):
         games[g.name] = g
     return games
 
+
 def load_all_impls(cfg_yml):
     impls = {}
     for impl_name, impl in cfg_yml['impl'].items():
         i = Impl(impl_name, impl)
         impls[impl_name] = i
     return impls
+
 
 def load_all_sources(game_dir, games):
     sources = defaultdict(lambda: [])
@@ -303,6 +310,7 @@ def load_all_sources(game_dir, games):
                     g.game = games[g.vars['GAME']]
                     sources[g.vars['GAME']].append(g)
     return sources
+
 
 def get_options():
     parser = argparse.ArgumentParser(description="The implementation game")
@@ -329,11 +337,13 @@ def get_options():
                         default="all")
     return parser.parse_args()
 
+
 def filter_dict(d, key_list):
     okay_keys = set([key.strip() for key in key_list.split(',')])
     remove_keys = set(d) - okay_keys
     for key in remove_keys:
         del d[key]
+
 
 def main():
     args = get_options()
